@@ -148,6 +148,45 @@ details.info{margin-top:8px;border-top:1px solid var(--line);padding-top:6px}det
 #stats .g{margin-top:6px}#stats .gl{display:flex;justify-content:space-between;color:var(--mute);font-size:11.5px}
 #recB[aria-pressed=true]{border-color:#ff5050;color:#ff6a6a}
 #recD{position:fixed;inset:0;z-index:57;background:rgba(5,7,10,.85);display:flex;align-items:center;justify-content:center;padding:16px}#recD[hidden]{display:none}#recD .box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;width:min(760px,100%)}#recD video{width:100%;border-radius:8px;background:#000}#recD p{color:var(--mute);font-size:13px;margin:8px 0}#recD .row{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ===== 화면 배치: PC 왼쪽 서랍 · 휴대폰 아래 시트 ===== */
+html,body{height:100%}
+body{display:grid;grid-template-columns:var(--sw,360px) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);height:100vh;height:100dvh;overflow:hidden}
+header{grid-column:1/-1}
+#side{grid-row:2;grid-column:1;overflow-y:auto;overscroll-behavior:contain;border-right:1px solid var(--line);background:var(--bg);min-height:0}
+.mapwrap{grid-row:2;grid-column:2;height:auto!important;min-height:0}
+#side #grid{grid-template-columns:1fr;max-height:44vh;padding:8px 12px}
+#side #wsBar,#side #tabs{padding-left:12px;padding-right:12px}#side #wSearch{width:100%}
+#side .bar{padding:10px 12px;border-bottom:0;gap:8px 12px}#side .bar .sp{display:none}
+#side .note{padding:10px 12px 18px}
+#sHead{display:none}
+body.sideOff{grid-template-columns:0 minmax(0,1fr)}body.sideOff #side{visibility:hidden;border:0}
+.qs{display:flex;gap:6px}
+.qs button{min-height:40px;min-width:0;width:92px;padding:4px 6px;font-size:12px;line-height:1.25;text-align:left;border-radius:9px;background:rgba(17,22,30,.92);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;white-space:normal}
+.qs button .k{color:var(--mute);margin-right:4px}
+.qs button[aria-pressed=true]{border-color:var(--acc);color:var(--acc)}
+.qs .all{width:auto;display:block;white-space:nowrap;color:var(--mute)}
+#qs{margin-left:auto}#qs button{background:var(--panel,#11161e)}
+@media(min-width:900px){header .help{display:none}}
+body.photo #qs{display:none}
+@media(min-width:900px){#tl{left:12px}#legend{max-width:300px}}
+@media(max-width:899px){
+ body{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) 74px}
+ .mapwrap{grid-column:1}
+ #side{position:fixed;left:0;right:0;bottom:0;z-index:45;height:74px;border-right:0;border-top:1px solid var(--line);border-radius:16px 16px 0 0;background:var(--panel,#11161e);box-shadow:0 -8px 24px rgba(0,0,0,.45);transition:height .25s ease;overflow-y:hidden}
+ #side[data-s="1"]{height:52dvh;overflow-y:auto}#side[data-s="2"]{height:88dvh;overflow-y:auto}
+ #side.drag{transition:none}
+ #sHead{display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:2;background:inherit;padding:14px 10px 8px;touch-action:none;cursor:grab}
+ #sGrip{position:absolute;left:50%;top:5px;transform:translateX(-50%);width:40px;height:5px;border-radius:3px;background:#3a4250}
+ #qsM{flex:1;overflow-x:auto;scrollbar-width:none}#qsM::-webkit-scrollbar{display:none}
+ #qsM button{flex:none;width:86px}
+ #sMore{flex:none;min-height:40px;white-space:nowrap;border-color:var(--acc);color:var(--acc)}
+ #qs{display:none}
+ #side #grid{max-height:none;grid-template-columns:1fr 1fr}
+ #fold{display:none}
+ #hud{top:40px!important;bottom:auto!important;right:12px;left:auto;text-align:right}
+}
+@media(prefers-reduced-motion:reduce){#side{transition:none}}
 </style>
 <script>if(/github\.io$/.test(location.hostname)){const l=document.createElement('link');l.rel='manifest';l.href='manifest.webmanifest';document.head.appendChild(l);const m=document.createElement('meta');m.name='theme-color';m.content='#0a0d12';document.head.appendChild(m);const a=document.createElement('link');a.rel='apple-touch-icon';a.href='icon-192.png';document.head.appendChild(a);if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}</script>
 </head>
@@ -173,9 +212,11 @@ details.info{margin-top:8px;border-top:1px solid var(--line);padding-top:6px}det
 <header>
   <h1>STRATEGIC ARSENAL <small id="cntH">무기 25종 · 방어 체계 6종</small></h1>
   <div class="help">좌클릭: 타격 · 드래그(플라즈마 빔·B-2): 경로 지정 · 휠: 줌 · 우클릭 드래그 / WASD: 지도 이동 · Ctrl+Z: 되돌리기</div>
+  <div id="qs" class="qs" aria-label="빠른 무기 칸 (숫자키 1~5)"></div>
   <button id="helpB">❔ 사용법</button>
   <button id="fold" aria-expanded="true" aria-controls="grid">패널 접기 ▲</button>
 </header>
+<aside id="side" aria-label="무기와 설정"><div id="sHead"><div id="sGrip" aria-hidden="true"></div><div id="qsM" class="qs" aria-label="빠른 무기 칸"></div><button id="sMore" aria-label="무기 목록 펼치기">무기 ▲</button></div>
 <div id="wsBar"><input id="wSearch" type="search" placeholder="무기 검색 (예: 로켓, 핵, 드론)" aria-label="무기 검색"></div>
 <div id="tabs" role="tablist" aria-label="무기 묶음"></div>
 <div id="grid" role="list" aria-label="무기 선택"></div>
@@ -206,6 +247,8 @@ details.info{margin-top:8px;border-top:1px solid var(--line);padding-top:6px}det
   <button id="clear">초기화</button>
   <button class="adv" id="home">지도 원위치</button>
 </div>
+<p class="note">실존·개념·가상 무기와 방어 체계가 있습니다. 위쪽 <b>디오라마</b> 버튼은 가로세로 30km(서울 크기) 구역을 햇빛·그림자·나무·자동차·사람이 있는 미니어처 도시로 보여 줍니다. 지도는 가상 도시이고, 피해 반경은 공개 자료 기반 게임용 근사값, 피해 집계와 요격 확률은 연출용 추정치입니다.</p>
+</aside>
 <div class="mapwrap" id="mw">
   <canvas id="cg" aria-label="지구본. 처음 클릭은 발사 지점, 다음 클릭부터 목표 지점입니다."></canvas><div id="gFx"></div>
   <div id="gPanel"><div id="gStep"></div><div id="gInfo"></div><div id="gDef" style="color:var(--mute);font-size:13px"></div><button id="gDown" hidden>🔍 디오라마로 내려가기</button>
@@ -230,7 +273,7 @@ details.info{margin-top:8px;border-top:1px solid var(--line);padding-top:6px}det
   <div id="pbar" hidden><button id="pSave">💾 사진 저장</button><button id="pExit">사진 모드 나가기</button></div>
   <div class="zoom"><button id="zin" aria-label="확대">+</button><button id="zout" aria-label="축소">−</button></div>
 </div>
-<p class="note">실존·개념·가상 무기와 방어 체계가 있습니다. 위쪽 <b>디오라마</b> 버튼은 가로세로 30km(서울 크기) 구역을 햇빛·그림자·나무·자동차·사람이 있는 미니어처 도시로 보여 줍니다. 지도는 가상 도시이고, 피해 반경은 공개 자료 기반 게임용 근사값, 피해 집계와 요격 확률은 연출용 추정치입니다.</p>
+
 
 <script>
 {
@@ -512,7 +555,7 @@ const TABS=[['fav','★ 즐겨찾기'],['conv','재래식'],['nuke','핵'],['non
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let FAV=new Set();try{FAV=new Set(JSON.parse(localStorage.getItem('sa-fav')||'[]'))}catch(e){}
 let tab='nuke';try{const v=localStorage.getItem('sa-tab');if(v&&TABS.some(t=>t[0]===v))tab=v}catch(e){}
-function renderGrid(){
+function renderGrid(){if(typeof renderQS==='function')setTimeout(renderQS,0);
   if(selDef<0&&CAT[sel]&&!$('tabs').dataset.init){tab=CAT[sel];$('tabs').dataset.init=1}
   $('tabs').innerHTML=TABS.map(([k,n])=>{const c=k==='def'?DT.length:k==='fav'?FAV.size:CAT.filter(x=>x===k).length;return`<button role="tab" data-t="${k}" aria-selected="${k===tab}">${n} <span style="color:var(--mute)">${c}</span></button>`}).join('');
   const card=(w,i)=>`<button class="wp${i===sel&&selDef<0?' on':''}" role="listitem" data-i="${i}" aria-pressed="${i===sel&&selDef<0}"><span class="star" data-f="${i}" role="switch" aria-checked="${FAV.has(i)}" aria-label="즐겨찾기" title="즐겨찾기">${FAV.has(i)?'★':'☆'}</span><span class="n">${w.name}<span class="tag t${w.tag}">${TAG[w.tag]}</span></span><span class="d">${w.desc}</span></button>`;
@@ -527,8 +570,32 @@ $('tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-t]'
 $('grid').addEventListener('click',e=>{const f=e.target.closest('.star');if(f){e.stopPropagation();const i=+f.dataset.f;FAV.has(i)?FAV.delete(i):FAV.add(i);try{localStorage.setItem('sa-fav',JSON.stringify([...FAV]))}catch(err){}renderGrid();return}},true);
 $('wSearch').addEventListener('input',renderGrid);
 $('grid').addEventListener('click',e=>{const b=e.target.closest('.wp');if(!b)return;
-  if(b.dataset.d!=null){selDef=+b.dataset.d}else{selDef=-1;sel=+b.dataset.i;try{localStorage.setItem('sa-sel',sel)}catch(err){}}renderGrid();syncNk();renderLegend();if(G3)G3.gMsg()});
-$('fold').onclick=()=>{const g=$('grid'),h=g.classList.toggle('hide');$('tabs').classList.toggle('hide',h);$('wsBar').classList.toggle('hide',h);$('fold').textContent=h?'패널 펼치기 ▼':'패널 접기 ▲';$('fold').setAttribute('aria-expanded',!h)};
+  if(b.dataset.d!=null){selDef=+b.dataset.d}else{selDef=-1;sel=+b.dataset.i;qsPush(sel);try{localStorage.setItem('sa-sel',sel)}catch(err){}}renderGrid();syncNk();renderLegend();if(G3)G3.gMsg()});
+const SIDE=$('side'),SHEET=()=>innerWidth<900;
+function sideOpen(){return SHEET()?SIDE.dataset.s>'0':!document.body.classList.contains('sideOff')}
+function sheetSet(n){SIDE.dataset.s=n;SIDE.scrollTop=0;$('sMore').textContent=n>0?'닫기 ▼':'무기 ▲';$('sMore').setAttribute('aria-label',n>0?'무기 목록 닫기':'무기 목록 펼치기')}
+function sideSet(open){if(SHEET()){sheetSet(open?1:0);return}document.body.classList.toggle('sideOff',!open);$('fold').textContent=open?'◀ 패널 접기':'▶ 패널 펼치기';$('fold').setAttribute('aria-expanded',open)}
+$('fold').setAttribute('aria-controls','side');$('fold').textContent='◀ 패널 접기';
+$('fold').onclick=()=>sideSet(!sideOpen());
+$('sMore').onclick=e=>{e.stopPropagation();sheetSet(SIDE.dataset.s>'0'?0:1)};
+{let y0=null,h0=0,moved=false;const H=()=>[74,innerHeight*.52,innerHeight*.88];
+ $('sHead').addEventListener('pointerdown',e=>{if(!SHEET()||e.target.closest('#qsM button,#sMore'))return;y0=e.clientY;h0=SIDE.getBoundingClientRect().height;moved=false;SIDE.classList.add('drag');$('sHead').setPointerCapture(e.pointerId)});
+ $('sHead').addEventListener('pointermove',e=>{if(y0==null)return;const dy=y0-e.clientY;if(Math.abs(dy)>6)moved=true;SIDE.style.height=clamp(h0+dy,74,innerHeight*.9)+'px'});
+ const end=e=>{if(y0==null)return;SIDE.classList.remove('drag');const h=SIDE.getBoundingClientRect().height;SIDE.style.height='';y0=null;
+   if(!moved){sheetSet(SIDE.dataset.s>'0'?0:1);return}const L=H();let b=0;L.forEach((v,i)=>{if(Math.abs(v-h)<Math.abs(L[b]-h))b=i});sheetSet(b)};
+ $('sHead').addEventListener('pointerup',end);$('sHead').addEventListener('pointercancel',end)}
+sheetSet(0);
+/* ===== 빠른 무기 칸 ===== */
+let REC5=[];try{REC5=JSON.parse(localStorage.getItem('sa-rec')||'[]').filter(i=>i>=0&&i<BASEN)}catch(e){}
+function qsPush(i){REC5=[i,...REC5.filter(x=>x!==i)].slice(0,5);try{localStorage.setItem('sa-rec',JSON.stringify(REC5))}catch(e){}}
+function qsList(){const L=[...REC5];for(const f of FAV){if(L.length>=5)break;if(!L.includes(f))L.push(f)}for(const d of [sel,0,13,25,28,31,2,1]){if(L.length>=5)break;if(d<BASEN&&!L.includes(d))L.push(d)}return L.slice(0,5)}
+function renderQS(){const L=qsList(),h=L.map((i,k)=>`<button data-q="${i}" aria-pressed="${i===sel&&selDef<0}" title="${esc(W[i].name)} (숫자키 ${k+1})"><span class="k">${k+1}</span>${esc(W[i].name)}</button>`).join('');
+  $('qs').innerHTML=h+'<button class="all" data-all="1">⋯ 전체</button>';$('qsM').innerHTML=h}
+function pickW(i){selDef=-1;sel=i;try{localStorage.setItem('sa-sel',sel)}catch(err){}if(tab==='def'||(tab!=='fav'&&CAT[i]!==tab)){tab=CAT[i]}renderGrid();syncNk();renderLegend();if(G3)G3.gMsg()}
+['qs','qsM'].forEach(id=>$(id).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;e.stopPropagation();if(b.dataset.all){sideSet(true);if(!SHEET())setTimeout(()=>$('wSearch').focus(),50);else sheetSet(2);return}
+  pickW(+b.dataset.q);msg(W[sel].name+' 선택')}));
+addEventListener('keydown',e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||e.ctrlKey||e.metaKey||e.altKey)return;const n=+e.key;if(n>=1&&n<=5){const L=qsList();if(L[n-1]!=null)pickW(L[n-1])}});
+addEventListener('resize',()=>{if(SHEET()){document.body.classList.remove('sideOff')}else{SIDE.dataset.s='0'}});
 $('hmode').onchange=()=>{if(!W[sel].fm)$('hmode').dataset.user=$('hmode').value;renderLegend()};
 $('kt').oninput=()=>{ktSel[sel]=s2kt(+$('kt').value);$('ktv').textContent=fmtKt(ktSel[sel]);renderLegend()};
 const VSN={high:'고고도',mid:'중고도',low:'저고도',laser:'레이저'};
@@ -2083,7 +2150,7 @@ $('cmpX').onclick=()=>{$('cmp').hidden=true;if(V3)V3.lockCam(false)};
   h.addEventListener('pointerdown',e=>{if(e.target.id==='cmpX')return;dn=true;h.setPointerCapture(e.pointerId);mv(e)});h.addEventListener('pointermove',e=>{if(dn)mv(e)});h.addEventListener('pointerup',()=>dn=false);
   $('cmpH').addEventListener('keydown',e=>{if(e.key==='ArrowLeft')cmpSet(cmpX-.05);if(e.key==='ArrowRight')cmpSet(cmpX+.05)})}
 /* 사진 모드 */
-$('photoB').onclick=()=>{document.body.classList.add('photo');$('pbar').hidden=false;if(!$('grid').classList.contains('hide'))$('fold').click()};
+$('photoB').onclick=()=>{document.body.classList.add('photo');$('pbar').hidden=false;if(sideOpen())sideSet(false)};
 $('pExit').onclick=()=>{document.body.classList.remove('photo');$('pbar').hidden=true};
 $('pSave').onclick=()=>{const src=mode3&&V3?V3.grab():(draw(SN()),cv);const c=document.createElement('canvas');c.width=src.width;c.height=src.height;const g=c.getContext('2d');g.drawImage(src,0,0);
   const fs=Math.round(c.height*.022);g.font=`700 ${fs}px Rajdhani,sans-serif`;g.textAlign='right';g.fillStyle='rgba(10,13,18,.55)';const tx='SIMULATION · 시뮬레이션 · STRATEGIC ARSENAL',tw=g.measureText(tx).width;
@@ -2128,7 +2195,7 @@ function randScene(){const pool=[...Array(BASEN).keys()].filter(i=>!W[i].band&&!
   for(let k=0;k<5;k++){const b=pool[Math.floor(Math.random()*pool.length)],a=Math.random()*6.283,r=Math.random()*8;L.push(ST(b,[P(Math.cos(a)*r,Math.sin(a)*r)],k?1500+Math.random()*4000:0,{wd:Math.round(Math.random()*71)*5,kt:W[b].nk?+(Math.pow(10,Math.random()*3)).toPrecision(2):0,m:W[b].nk?'air':''}))}
   return{v:1,title:'랜덤 공격',m:modeN===3?0:modeN,re:modeN===2?1:0,cine:1,s:L}}
 function scnOpen(){$('scnList').innerHTML=SCENES.map(c=>`<button class="scnC" data-sc="${c.id}"><b>${c.title}</b><span>${c.desc}</span><small>${c.rand?'지금 화면':c.m===2?'디오라마':c.m===1?'3D 시점':'2D 지도'}${c.s?' · 공격 '+c.s.length+'회':''}${c.d?' · 방어 '+c.d.length+'개':''}</small></button>`).join('');$('scnD').hidden=false;$('scnX').focus()}
-$('scnList').addEventListener('click',e=>{const b=e.target.closest('[data-sc]');if(!b)return;const c=SCENES.find(x=>x.id===b.dataset.sc);$('scnD').hidden=true;if(window.innerWidth<700&&!$('grid').classList.contains('hide'))$('fold').click();
+$('scnList').addEventListener('click',e=>{const b=e.target.closest('[data-sc]');if(!b)return;const c=SCENES.find(x=>x.id===b.dataset.sc);$('scnD').hidden=true;if(SHEET()&&sideOpen())sideSet(false);
   sceneLoad(c.rand?randScene():{v:1,title:c.title,m:c.m,mood:c.mood,cine:c.cine,d:c.d||[],s:c.s})});
 $('scnB').onclick=scnOpen;$('scnX').onclick=()=>{$('scnD').hidden=true};$('scnStop').onclick=()=>{SCN++;$('scnBan').hidden=true;log('시나리오 멈춤','w')};
 function shareOpen(){const o=sceneGet(),c=b64e(o);$('shCode').value=c;$('shLink').value=location.href.split('#')[0]+'#s'+c;$('shMsg').textContent=o.s.length?`공격 ${o.s.length}회 · 방어 ${o.d.length}개 포함`:'아직 공격이 없어요. 방어 배치만 저장돼요.';slotsUI();$('shareD').hidden=false;$('shX').focus()}
@@ -2147,13 +2214,13 @@ const TOUR=[['#grid','① 무기 고르기','탭(재래식·핵·SF…)이나 �
  ['.seg','④ 화면 바꾸기','2D 지도 · 3D 시점 · 미니어처 디오라마 · 지구본을 오가며 같은 공격을 다르게 볼 수 있어요.'],
  ['#scnB','⑤ 시나리오·저장','🎬 시나리오로 준비된 연출을 자동 재생하거나, 🔗로 내 장면을 저장·공유하세요. 사용법은 언제든 "❔ 사용법"으로 다시 볼 수 있어요.']];
 let tourI=0;
-function tourShow(){const t=TOUR[tourI],el=document.querySelector(t[0]);if(!el){tourEnd();return}if($('grid').classList.contains('hide')&&tourI===0)$('fold').click();el.scrollIntoView({block:'nearest'});
+function tourShow(){const t=TOUR[tourI],el=document.querySelector(t[0]);if(!el){tourEnd();return}if(!sideOpen()&&tourI===0)sideSet(true);el.scrollIntoView({block:'nearest'});
   const r=el.getBoundingClientRect(),pad=6,hi=$('tourHi');Object.assign(hi.style,{left:r.left-pad+'px',top:r.top-pad+'px',width:r.width+pad*2+'px',height:Math.min(r.height,innerHeight-r.top-12)+pad*2+'px'});
   $('tourH').textContent=t[1];$('tourP').textContent=t[2];$('tourN').textContent=`${tourI+1} / ${TOUR.length}`;$('tourNext').textContent=tourI===TOUR.length-1?'시작하기':'다음';
   const tip=$('tourTip'),tw=Math.min(340,innerWidth-24),below=r.bottom+12+170<innerHeight,big=r.height>innerHeight*.5;
   tip.style.left=Math.max(12,Math.min(innerWidth-tw-12,r.left))+'px';tip.style.top=(big?Math.max(12,r.top+20):below?r.bottom+12:Math.max(12,r.top-182))+'px';$('tourNext').focus()}
 function tourStart(){tourI=0;$('tour').hidden=false;tourShow()}
-function tourEnd(){$('tour').hidden=true;try{localStorage.setItem('sa-tour','1')}catch(e){}}
+function tourEnd(){$('tour').hidden=true;if(SHEET())sheetSet(0);try{localStorage.setItem('sa-tour','1')}catch(e){}}
 $('tourNext').onclick=()=>{tourI++;if(tourI>=TOUR.length)tourEnd();else tourShow()};$('tourSkip').onclick=tourEnd;$('helpB').onclick=tourStart;
 addEventListener('resize',()=>{if(!$('tour').hidden)tourShow()});
 addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('chD').hidden)$('chD').hidden=true;if(!$('scnD').hidden)$('scnD').hidden=true;if(!$('tour').hidden)tourEnd();if(!$('shareD').hidden)$('shareD').hidden=true}});
@@ -2164,11 +2231,11 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('chD').hidden)$('chD')
    cam.x-=(mx-pin.mx)/cam.z;cam.y-=(my-pin.my)/cam.z;if(pin.d>10)zoomAt(d/pin.d,mx-r.left,my-r.top);pin={d,mx,my};dirty=true}},true);
  const up=e=>{P.delete(e.pointerId);if(P.size<2){if(pin)drag=null;pin=null}};cv.addEventListener('pointerup',e=>{if(pin){up(e);e.stopImmediatePropagation();return}up(e)},true);cv.addEventListener('pointercancel',up,true)}
 /* ===== 휴대폰 맞춤 ===== */
-const COARSE=matchMedia('(pointer:coarse)').matches,NARROW=()=>innerWidth<700;
+const COARSE=matchMedia('(pointer:coarse)').matches,NARROW=()=>innerWidth<900;
 $('moreB').onclick=()=>{const on=document.body.classList.toggle('more');$('moreB').setAttribute('aria-expanded',on);$('moreB').textContent=on?'⚙ 접기':'⚙ 더보기'};
 $('legend').addEventListener('click',e=>{if(!NARROW())return;if(e.target.closest('button,input,select,a,details'))return;$('legend').classList.toggle('min')});
 if(NARROW()){$('legend').classList.add('min');$('camOn').checked=false;$('camOn').dispatchEvent(new Event('change'))}
-$('grid').addEventListener('click',e=>{if(!NARROW()||e.target.closest('.star'))return;const b=e.target.closest('.wp');if(!b)return;setTimeout(()=>{if(!$('grid').classList.contains('hide'))$('fold').click();msg(selDef>=0?'지도를 탭하면 방어 체계를 놓아요':'지도를 탭하면 발사해요 · 두 손가락으로 확대·이동')},150)});
+$('grid').addEventListener('click',e=>{if(!NARROW()||e.target.closest('.star'))return;const b=e.target.closest('.wp');if(!b)return;setTimeout(()=>{if(sideOpen())sideSet(false);msg(selDef>=0?'지도를 탭하면 방어 체계를 놓아요':'지도를 탭하면 발사해요 · 두 손가락으로 확대·이동')},150)});
 /* ===== 방어 챌린지 ===== */
 const CHS=[
  {n:'1단계 · 연습',d:'순항미사일·로켓·드론·단거리 탄도탄을 막아요.',budget:60,waves:[[[0,3]],[[25,2],[28,2]],[[31,3]]]},
@@ -2181,9 +2248,9 @@ function chBar(){if(!CH)return;$('chBan').hidden=false;$('chGo').hidden=CH.phase
 const chCore=()=>{const R=9,a=[];for(let k=0;k<blocks.length;k++){const b=blocks[k],x=b[0]+b[2]/2-CX,y=b[1]+b[3]/2-CY;if(x*x+y*y<R*R)a.push(k)}return a};
 async function chStart(i){$('chD').hidden=true;$('chR').hidden=true;if(modeN===3)await setMode(0);SCN++;$('scnBan').hidden=true;
   CH={i,budget:CHS[i].budget,phase:'place',w:0,ok:0,tot:0,tok:Math.random()};CH.auto=true;$('clear').onclick();CH.auto=false;DEFS=[];if(V3)V3.syncDef();updBudget();renderLegend();
-  cam.x=CX;cam.y=CY;if(modeN===0)home();tab='def';selDef=-1;renderGrid();if($('grid').classList.contains('hide'))$('fold').click();chBar();log(`방어 챌린지 시작 · ${CHS[i].n} · 예산 ${CH.budget}점`,'w');
+  cam.x=CX;cam.y=CY;if(modeN===0)home();tab='def';selDef=-1;renderGrid();if(!sideOpen())sideSet(true);chBar();log(`방어 챌린지 시작 · ${CHS[i].n} · 예산 ${CH.budget}점`,'w');
   msg('방어 탭에서 방어 체계를 골라 지도에 놓은 뒤 "웨이브 시작"을 누르세요')}
-function chWave(){if(!CH)return;const tok=CH.tok,c=CHS[CH.i],wv=c.waves[CH.w];CH.phase='wave';selDef=-1;renderGrid();if(NARROW()&&!$('grid').classList.contains('hide'))$('fold').click();chBar();log(`웨이브 ${CH.w+1} 접근`,'d');
+function chWave(){if(!CH)return;const tok=CH.tok,c=CHS[CH.i],wv=c.waves[CH.w];CH.phase='wave';selDef=-1;renderGrid();if(SHEET()&&sideOpen())sideSet(false);chBar();log(`웨이브 ${CH.w+1} 접근`,'d');
   const L=[];wv.forEach(([b,n,kt])=>{for(let q=0;q<n;q++)L.push([b,kt])});L.sort(()=>Math.random()-.5);let k=0;const h0=$('hmode').value,s0=sel;
   const fire=()=>{if(!CH||CH.tok!==tok)return;if(k>=L.length){setTimeout(()=>{if(!CH||CH.tok!==tok)return;CH.w++;if(CH.w<3){log('다음 웨이브까지 잠시 대기','w');setTimeout(()=>{if(CH&&CH.tok===tok)chWave()},3500)}else chEnd()},7000);return}
     const [b,kt]=L[k++],a=Math.random()*6.283,r=1+Math.random()*6;sel=b;if(kt)ktSel[b]=kt;$('hmode').value='air';CH.auto=true;const n0=strikes.length;strike([{x:CX+Math.cos(a)*r,y:CY+Math.sin(a)*r}],false);CH.auto=false;$('hmode').value=h0;sel=s0;
