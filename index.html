@@ -236,7 +236,7 @@ body.photo #qs{display:none}
 <div id="grid" role="list" aria-label="무기 선택"></div>
 <div class="bar">
   <span class="seg" role="group" aria-label="보기 방식"><button id="m2" aria-pressed="true">2D 지도</button><button id="m3" aria-pressed="false">3D 시점</button><button id="m4" aria-pressed="false">디오라마</button><button id="m5" aria-pressed="false">🌏 지구본</button></span>
-  <span id="rotL" hidden><label><input type="checkbox" id="rot" style="accent-color:var(--acc);width:18px;height:18px"> 자동 회전</label> <span id="dioC" hidden style="display:inline-flex;gap:6px;align-items:center;margin-left:6px"><select id="moodT" aria-label="시간대"><option value="day">☀️ 낮</option><option value="sunset">🌇 노을</option><option value="night">🌙 밤</option></select><select id="moodW" aria-label="날씨"><option value="clear">맑음</option><option value="rain">🌧 비</option><option value="snow">❄️ 눈</option></select><button id="miniB" aria-pressed="true">미니어처 켜짐</button><button id="liteB" aria-pressed="false">가벼운 모드 꺼짐</button><button id="pipB" aria-pressed="false">🌏 작은 지구본</button><label><input type="checkbox" id="tflow" style="accent-color:var(--acc);width:18px;height:18px"> 🌅 시간 흐름</label></span> <span id="camd"></span></span>
+  <span id="rotL" hidden><label><input type="checkbox" id="rot" style="accent-color:var(--acc);width:18px;height:18px"> 자동 회전</label><button id="n3B" hidden>🌙 밤 도시로</button> <span id="dioC" hidden style="display:inline-flex;gap:6px;align-items:center;margin-left:6px"><select id="moodT" aria-label="시간대"><option value="day">☀️ 낮</option><option value="sunset">🌇 노을</option><option value="night">🌙 밤</option></select><select id="moodW" aria-label="날씨"><option value="clear">맑음</option><option value="rain">🌧 비</option><option value="snow">❄️ 눈</option></select><button id="miniB" aria-pressed="true">미니어처 켜짐</button><button id="liteB" aria-pressed="false">가벼운 모드 꺼짐</button><button id="pipB" aria-pressed="false">🌏 작은 지구본</button><label><input type="checkbox" id="tflow" style="accent-color:var(--acc);width:18px;height:18px"> 🌅 시간 흐름</label></span> <span id="camd"></span></span>
   <span>선택: <span id="sel"></span></span>
   <span id="nkC" hidden style="display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap"><label>폭발 높이 <select id="hmode"><option value="air">공중 폭발</option><option value="surf">지표 폭발</option><option value="under">지하 폭발</option><option value="water">수중 폭발</option><option value="high">고고도 폭발</option></select></label><label for="kt">위력 <input type="range" id="kt" min="0" max="100" step="1" style="width:150px"> <b id="ktv" style="color:var(--acc);min-width:52px;display:inline-block"></b></label></span>
   <label class="adv" for="wind">낙진 방향 <input type="range" id="wind" min="0" max="355" step="5" value="90"> <span id="windv"></span></label>
@@ -1237,8 +1237,8 @@ async function init3D(){
   const el=$('c3'),R=new T.WebGLRenderer({canvas:el,antialias:true,powerPreference:'high-performance'});
   const PR=Math.min(window.devicePixelRatio||1,matchMedia('(pointer:coarse)').matches?1.25:1.5);R.setPixelRatio(PR);R.toneMapping=T.ACESFilmicToneMapping;R.toneMappingExposure=1.05;
   const sc=new T.Scene();sc.background=new T.Color(0x05080d);const fog0=new T.FogExp2(0x070b12,.011);sc.fog=fog0;R.shadowMap.enabled=true;R.shadowMap.type=T.PCFSoftShadowMap;
-  const cam3=new T.PerspectiveCamera(50,1,.01,3000);cam3.position.set(CX+9,6.5,CY+15);
-  const ctl=new OrbitControls(cam3,el);ctl.target.set(CX,0,CY);ctl.enableDamping=true;ctl.dampingFactor=.08;ctl.maxPolarAngle=Math.PI/2-.05;ctl.minDistance=.3;ctl.maxDistance=420;ctl.autoRotateSpeed=.35;
+  const cam3=new T.PerspectiveCamera(50,1,.004,3200);cam3.position.set(CX-1.9,.45,CY+2.9);
+  const ctl=new OrbitControls(cam3,el);ctl.target.set(CX+.1,.12,CY-.1);ctl.enableDamping=true;ctl.dampingFactor=.08;ctl.maxPolarAngle=Math.PI/2-.03;ctl.minDistance=.08;ctl.maxDistance=420;ctl.autoRotateSpeed=.35;
   ctl.mouseButtons={LEFT:T.MOUSE.ROTATE,MIDDLE:T.MOUSE.DOLLY,RIGHT:T.MOUSE.PAN};
   const hemi=new T.HemisphereLight(0x5d73a0,0x090b10,.7);sc.add(hemi);const moon=new T.DirectionalLight(0x9fb4e0,.55);moon.position.set(-40,60,-25);sc.add(moon);
   const gnd=new T.Mesh(new T.PlaneGeometry(WX*4,WY*4),new T.MeshStandardMaterial({color:0x0d131b,roughness:1}));gnd.rotation.x=-Math.PI/2;gnd.position.set(CX,0,CY);sc.add(gnd);
@@ -1257,9 +1257,9 @@ async function init3D(){
   bgeo.setAttribute('aTy',new T.InstancedBufferAttribute(Float32Array.from(blocks,b=>b[6]),1));bgeo.setAttribute('aRn',new T.InstancedBufferAttribute(Float32Array.from(blocks,b=>b[4]),1));
   const bmat=new T.MeshStandardMaterial({color:0xffffff,roughness:.8,metalness:.15});
   const uDay={value:0},uNight={value:1};
-  bmat.onBeforeCompile=sh=>{sh.uniforms.uDay=uDay;sh.uniforms.uNight=uNight;sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nattribute float aLit;attribute float aTy;attribute float aRn;varying float vLit;varying vec3 vWP;varying vec3 vWN;varying vec3 vON;varying float vTy;varying float vRn;')
-      .replace('#include <project_vertex>','#include <project_vertex>\nvec4 _wp=modelMatrix*instanceMatrix*vec4(transformed,1.0);vWP=_wp.xyz;vWN=normalize(mat3(modelMatrix*instanceMatrix)*objectNormal);vLit=aLit;vON=objectNormal;vTy=aTy;vRn=aRn;');
-    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform float uDay;uniform float uNight;varying float vLit;varying vec3 vWP;varying vec3 vWN;varying vec3 vON;varying float vTy;varying float vRn;')
+  bmat.onBeforeCompile=sh=>{sh.uniforms.uDay=uDay;sh.uniforms.uNight=uNight;sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nattribute float aLit;attribute float aTy;attribute float aRn;varying float vLit;varying vec3 vWP;varying vec3 vWN;varying vec3 vON;varying float vTy;varying float vRn;varying float vUy;')
+      .replace('#include <project_vertex>','#include <project_vertex>\nvUy=position.y;vec4 _wp=modelMatrix*instanceMatrix*vec4(transformed,1.0);vWP=_wp.xyz;vWN=normalize(mat3(modelMatrix*instanceMatrix)*objectNormal);vLit=aLit;vON=objectNormal;vTy=aTy;vRn=aRn;');
+    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform float uDay;uniform float uNight;varying float vLit;varying vec3 vWP;varying vec3 vWN;varying vec3 vON;varying float vTy;varying float vRn;varying float vUy;')
       .replace('#include <color_fragment>',`#include <color_fragment>
 float sd=1.0-step(0.5,abs(vWN.y));float hc=abs(vWN.x)>abs(vWN.z)?vWP.z:vWP.x;vec2 cl=vec2(hc/0.0045,vWP.y/0.0032);vec2 fr=fract(cl);vec2 id=floor(cl);
 float wn=step(0.22,fr.x)*step(fr.x,0.78)*step(0.28,fr.y)*step(fr.y,0.78);float on=step(0.5,fract(sin(dot(id+floor(vWP.xz*40.0),vec2(12.9898,78.233)))*43758.5453));
@@ -1267,7 +1267,7 @@ float aa=clamp(1.0-max(fwidth(cl.x),fwidth(cl.y))*1.2,0.0,1.0);float gw=mix(0.3,
 diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.3,0.38,0.47)+0.1*fr.y,gw*uDay*0.85);
 if(vWN.y>0.5)diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*0.5+vec3(0.17),uDay);
 if(uDay>0.5&&sd>0.5){float fy=fract(vWP.y/0.0029);float up=step(0.004,vWP.y);
- if(vTy>1.5&&vTy<2.5){if(abs(vON.z)>0.5)diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.95,0.94,0.9),step(fy,0.2)*up*aa*0.9);
+ if(vTy>1.5&&vTy<2.5){if(abs(vON.z)>0.5){diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.95,0.94,0.9),step(fy,0.2)*up*aa*0.9);vec3 bc=0.45+0.4*cos(6.2832*(vRn*5.3+vec3(0.,0.33,0.67)));diffuseColor.rgb=mix(diffuseColor.rgb,bc,step(0.9,vUy)*step(vUy,0.965));}
    else diffuseColor.rgb=mix(diffuseColor.rgb,vRn<0.5?vec3(0.62,0.22,0.18):vec3(0.24,0.38,0.62),0.72*up);}
  else if(vTy>0.5&&vTy<1.5){float gf=step(vWP.y,0.0042),awb=step(0.0033,vWP.y)*gf;vec3 aw=0.5+0.42*cos(6.2832*(vRn*3.7+vec3(0.,0.33,0.67)));
    diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.22,0.3,0.38),gf*(1.0-awb)*0.85);diffuseColor.rgb=mix(diffuseColor.rgb,aw,awb);
@@ -1278,18 +1278,38 @@ float lw=mix(0.06,wn*on,aa);totalEmissiveRadiance+=vec3(1.0,0.7,0.36)*1.5*lw*sd*
   const bm=new T.InstancedMesh(bgeo,bmat,N);bm.instanceMatrix.setUsage(T.DynamicDrawUsage);bm.castShadow=bm.receiveShadow=true;sc.add(bm);let day=false,DR=null;
   const CB=[0x42506a,0x3a4352,0x58606e,0x353c47,0x3c3f45].map(c=>new T.Color(c)),cBase=new T.Color(0x3b475b),cChar=new T.Color(0x120f0d),cDmg=new T.Color(0x262729),cIce=new T.Color(0x9fe8ff),cFl=new T.Color(0xc8b8ff),M=new T.Matrix4(),Q=new T.Quaternion(),E=new T.Euler(),P=new T.Vector3(),S3=new T.Vector3(),tmp=new T.Color();
   const CBD=[0xb4c3d6,0xcdbfa6,0xe8e4da,0xd9c7ae,0xa3a29c].map(c=>new T.Color(c)),Z0=new T.Matrix4().makeScale(0,0,0);
+  /* ===== 밝은 3D 도시 (낮) ===== */
+  let b3=true;try{b3=localStorage.getItem('sa-3dnight')!=='1'}catch(e){}
+  const TWC=[0x6f8fb0,0x4c6a8c,0x8c6a55,0x5f8c86,0x9aa7b4,0x3f5470,0xb9a789,0x7a8fa3].map(c=>new T.Color(c));
+  const LITE3=matchMedia('(pointer:coarse)').matches;
+  /* 산맥: 도시를 둘러싼 분지 */
+  const MH3=(x,z)=>{const dx=(x-CX)/1.25,dz=z-CY,r=Math.hypot(dx,dz),a=Math.atan2(dz,dx);let ring=clamp((r-46)/16,0,1);
+    let h=ring*(.75+.38*Math.sin(a*5+1)+.26*Math.sin(a*13)+.16*Math.sin(a*29+2))+ring*(.1*Math.sin(x/1.7)*Math.cos(z/1.5)+.05*Math.sin(x/.6+z/.7));
+    towns.forEach(t=>{const d=Math.hypot(x-t.x,z-t.y);if(d<10)h*=clamp((d-6)/4,0,1)});if(Math.abs(z-riverY(x))<3)h*=.08;return Math.max(0,h)};
+  const BUR=new Uint8Array(N);for(let i=0;i<N;i++){const b=blocks[i];if(MH3(b[0]+b[2]/2,b[1]+b[3]/2)>.004)BUR[i]=1}
+  /* 지붕·옥상 장식 (건물과 같은 행렬을 따라감) */
+  const DECO=[],DI=new Int32Array(N).fill(-1),DK=new Int8Array(N).fill(-1);
+  {const gab=new T.BufferGeometry(),v=[-.52,1,-.52,.52,1,-.52,0,1.42,-.52,-.52,1,.52,0,1.42,.52,.52,1,.52],ix=[0,2,1,3,5,4,0,3,4,0,4,2,1,2,4,1,4,5,0,1,5,0,5,3];gab.setAttribute('position',new T.Float32BufferAttribute(v,3));gab.setIndex(ix);
+    const g1=gab.toNonIndexed();g1.computeVertexNormals();
+    const g2=new T.BoxGeometry(.45,.035,.45);g2.translate(0,1.0175,0);const g3=new T.BoxGeometry(.5,.07,.16);g3.translate(.1,1.035,0);
+    const kinds=[[g1,t=>t===3,[0xc8643a,0xa94f36,0x5d6a77,0x7b4f3a,0xd9864a,0x8a4434]],[g2,t=>t===0,[0x5f6670,0x3d3f45,0x8c9096]],[g3,t=>t===2,[0xe6e2da,0xd9d4cb]]];
+    kinds.forEach(([g,f,cols],k)=>{const idx=[];for(let i=0;i<N;i++)if(f(blocks[i][6])){DI[i]=idx.length;DK[i]=k;idx.push(i)}
+      const m=new T.InstancedMesh(g,new T.MeshStandardMaterial({roughness:.85}),Math.max(1,idx.length));m.instanceMatrix.setUsage(T.DynamicDrawUsage);idx.forEach((i,j)=>{m.setMatrixAt(j,Z0);m.setColorAt(j,new T.Color(cols[Math.floor(blocks[i][4]*977)%cols.length]))});
+      m.castShadow=m.receiveShadow=true;m.frustumCulled=false;sc.add(m);DECO.push({m})})}
+  const setM=(i,m)=>{bm.setMatrixAt(i,m);const d=DI[i];if(d>=0)DECO[DK[i]].m.setMatrixAt(d,m)};
   function updB(now){for(let i=0;i<N;i++){const b=blocks[i],h=bh[i],t=hitT[i],cx=b[0]+b[2]/2,cy=b[1]+b[3]/2;
-      if(day&&(Math.abs(cx-DR.cx)>DR.R||Math.abs(cy-DR.cy)>DR.R)){bm.setMatrixAt(i,Z0);continue}
-      if(day&&KB[i]&&!(t<=now&&hitS[i]>=2)){bm.setMatrixAt(i,Z0);continue}
-      let sy=h,tl=0,px=cx,pz=cy,sc2=1;if(day){const r=b[4],ty=b[6];if(ty===3)tmp.setHSL(.05+r*.12,.3+r*.15,.74+r*.08);else if(ty===0)tmp.setHSL(.55+r*.1,.1+r*.12,.7+r*.12);else if(ty===1)tmp.setHSL(.07+r*.06,.14+r*.1,.7+r*.12);else if(ty===2)tmp.setHSL(.1,.1+r*.08,.86+r*.06);else tmp.copy(CBD[ty])}else tmp.copy(CB[b[6]]);
+      if(day&&(Math.abs(cx-DR.cx)>DR.R||Math.abs(cy-DR.cy)>DR.R)){setM(i,Z0);continue}
+      if(!day&&b3&&BUR[i]){setM(i,Z0);continue}
+      if(day&&KB[i]&&!(t<=now&&hitS[i]>=2)){setM(i,Z0);continue}
+      let sy=h,tl=0,px=cx,pz=cy,sc2=1;if(day||b3){const r=b[4],ty=b[6];if(b3&&!day&&ty===0)tmp.set(TWC[Math.floor(r*TWC.length)%TWC.length]).offsetHSL(0,0,(r*7%1-.5)*.08);else if(ty===3)tmp.setHSL(.05+r*.12,.3+r*.15,.74+r*.08);else if(ty===0)tmp.setHSL(.55+r*.1,.1+r*.12,.7+r*.12);else if(ty===1)tmp.setHSL(.07+r*.06,.14+r*.1,.7+r*.12);else if(ty===2)tmp.setHSL(.1,.1+r*.08,.86+r*.06);else tmp.copy(CBD[ty])}else tmp.copy(CB[b[6]]);
       if(t<=now){const k=clamp((now-t)/450,0,1);
-        if(SPC[i]===1){const kc=clamp((now-t)/900,0,1);tmp.lerp(cIce,.85*kc);sy=h*(1+.1*kc);E.set(0,-b[7],0);Q.setFromEuler(E);P.set(px,0,pz);S3.set(b[2]*(1+.06*kc),sy,b[3]*(1+.06*kc));M.compose(P,Q,S3);bm.setMatrixAt(i,M);bm.setColorAt(i,tmp);continue}
-        if(SPC[i]===2){const e=(now-t)/1000,lift=Math.min(.5+h*3,e*.09*(.6+hsh(i)*.8));E.set(Math.sin(e*.6+i)*.12,-b[7]+e*.15*(hsh(i)-.5),Math.cos(e*.5+i)*.12);Q.setFromEuler(E);P.set(px,lift,pz);S3.set(b[2],Math.max(h,.004),b[3]);M.compose(P,Q,S3);bm.setMatrixAt(i,M);bm.setColorAt(i,tmp.lerp(cFl,.55));continue}
-        if(hitS[i]===3&&k>.15){bm.setMatrixAt(i,Z0);continue}
-        if(pullX[i]===pullX[i]){const g=ease(clamp((now-t)/1800,0,1));if(g>.97){bm.setMatrixAt(i,Z0);continue}px=cx+(pullX[i]-cx)*g;pz=cy+(pullY[i]-cy)*g;sc2=1-g*.8;tl=g*.9*(hsh(i)-.5);sy=h*(1-g*.5);tmp.lerp(cChar,g*.6)}
+        if(SPC[i]===1){const kc=clamp((now-t)/900,0,1);tmp.lerp(cIce,.85*kc);sy=h*(1+.1*kc);E.set(0,-b[7],0);Q.setFromEuler(E);P.set(px,0,pz);S3.set(b[2]*(1+.06*kc),sy,b[3]*(1+.06*kc));M.compose(P,Q,S3);setM(i,M);bm.setColorAt(i,tmp);continue}
+        if(SPC[i]===2){const e=(now-t)/1000,lift=Math.min(.5+h*3,e*.09*(.6+hsh(i)*.8));E.set(Math.sin(e*.6+i)*.12,-b[7]+e*.15*(hsh(i)-.5),Math.cos(e*.5+i)*.12);Q.setFromEuler(E);P.set(px,lift,pz);S3.set(b[2],Math.max(h,.004),b[3]);M.compose(P,Q,S3);setM(i,M);bm.setColorAt(i,tmp.lerp(cFl,.55));continue}
+        if(hitS[i]===3&&k>.15){setM(i,Z0);continue}
+        if(pullX[i]===pullX[i]){const g=ease(clamp((now-t)/1800,0,1));if(g>.97){setM(i,Z0);continue}px=cx+(pullX[i]-cx)*g;pz=cy+(pullY[i]-cy)*g;sc2=1-g*.8;tl=g*.9*(hsh(i)-.5);sy=h*(1-g*.5);tmp.lerp(cChar,g*.6)}
         else if(hitS[i]>=2){sy=h*(1-.88*ease(k));tl=.55*k*(hsh(i)-.5);tmp.lerp(cChar,k)}else{tl=.14*k*(hsh(i)-.5);tmp.lerp(cDmg,.6*k)}}
-      E.set(tl,-b[7],tl*.7);Q.setFromEuler(E);P.set(px,0,pz);S3.set(b[2]*sc2,Math.max(sy,.004),b[3]*sc2);M.compose(P,Q,S3);bm.setMatrixAt(i,M);bm.setColorAt(i,tmp)}
-    bm.instanceMatrix.needsUpdate=true;bm.instanceColor.needsUpdate=true}
+      E.set(tl,-b[7],tl*.7);Q.setFromEuler(E);P.set(px,0,pz);S3.set(b[2]*sc2,Math.max(sy,.004),b[3]*sc2);M.compose(P,Q,S3);setM(i,M);bm.setColorAt(i,tmp)}
+    bm.instanceMatrix.needsUpdate=true;bm.instanceColor.needsUpdate=true;DECO.forEach(d=>d.m.instanceMatrix.needsUpdate=true)}
   updB(SN());
   /* 불빛, 화재 */
   const FMAX=3000,fgeo=new T.BufferGeometry();fgeo.setAttribute('position',new T.BufferAttribute(new Float32Array(FMAX*3),3));
@@ -1485,6 +1505,47 @@ a*=clamp(1.-(t-45.)/20.,0.,1.);vec4 mv=modelViewMatrix*vec4(p*uS,1.);gl_Position
   const ctl2=new OrbitControls(ortho,el);ctl2.enableDamping=true;ctl2.dampingFactor=.08;ctl2.mouseButtons={LEFT:T.MOUSE.ROTATE,MIDDLE:T.MOUSE.DOLLY,RIGHT:T.MOUSE.PAN};
   ctl2.minPolarAngle=.45;ctl2.maxPolarAngle=1.2;ctl2.minZoom=.08;ctl2.maxZoom=60;ctl2.enabled=false;ctl2.autoRotateSpeed=.5;
   const sun=new T.DirectionalLight(0xffe9cc,0);sun.castShadow=true;sun.shadow.mapSize.set(4096,4096);sun.shadow.bias=-.0004;sun.shadow.normalBias=.015;sc.add(sun);sc.add(sun.target);
+  /* ===== 밝은 3D 도시: 하늘·땅·산·나무 ===== */
+  const B3G=new T.Group();sc.add(B3G);const fogD=new T.Fog(0xc4dbee,8,150);
+  {const g=new T.SphereGeometry(1500,48,24),p=g.attributes.position,c=[],A=new T.Color(0x2a66ad),Bc=new T.Color(0x9cc6ea),Hc=new T.Color(0xd2e4f2),t=new T.Color();
+    for(let i=0;i<p.count;i++){const y=p.getY(i)/1500;if(y<.02)t.copy(Hc).lerp(Bc,Math.max(0,y/.02));else t.copy(Bc).lerp(A,Math.min(1,Math.pow((y-.02)/.5,.7)));c.push(t.r,t.g,t.b)}
+    g.setAttribute('color',new T.Float32BufferAttribute(c,3));const sky=new T.Mesh(g,new T.MeshBasicMaterial({vertexColors:true,side:T.BackSide,fog:false,depthWrite:false}));sky.position.set(CX,0,CY);sky.renderOrder=-2;B3G.add(sky);
+    const cc=document.createElement('canvas');cc.width=256;cc.height=128;const x=cc.getContext('2d');for(let j=0;j<16;j++){const px=60+Math.random()*136,py=56+Math.random()*16,r=14+Math.random()*22,rg=x.createRadialGradient(px,py,0,px,py,r);rg.addColorStop(0,'rgba(255,255,255,.9)');rg.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=rg;x.beginPath();x.arc(px,py,r,0,7);x.fill()}
+    const ct=new T.CanvasTexture(cc);ct.colorSpace=T.SRGBColorSpace;const cm=new T.SpriteMaterial({map:ct,fog:false,depthWrite:false,transparent:true,opacity:.8});
+    for(let k=0;k<26;k++){const sp=new T.Sprite(cm),a=Math.random()*6.283,d=60+Math.random()*160;sp.position.set(CX+Math.cos(a)*d,9+Math.random()*7,CY+Math.sin(a)*d);const s2=30+Math.random()*40;sp.scale.set(s2,s2*.5,1);B3G.add(sp)}}
+  /* 땅 그림: 시가지·공원·강·큰길 */
+  {const K=LITE3?16:24,c=document.createElement('canvas');c.width=WX*K;c.height=WY*K;const g=c.getContext('2d');g.fillStyle='#8d9e6e';g.fillRect(0,0,c.width,c.height);g.scale(K,K);
+    for(let j=0;j<NCY;j++)for(let i=0;i<NCX;i++){const x0=GX0+i*CS,y0=GY0+j*CS,mx=x0+CS/2,my=y0+CS/2,z=cellZone[j*NCX+i];const dc=Math.hypot((mx-CX)/1.25,my-CY);let dn=Math.exp(-dc/11)*1.15;towns.forEach(t=>{dn=Math.max(dn,.9*Math.exp(-Math.hypot(mx-t.x,my-t.y)/3.4))});
+      if(z>=0)g.fillStyle=['#a9a69e','#b3aea4','#b9b6ae','#b6ad9c','#a3a29c'][z];else if(dn>.3)g.fillStyle='#a7a798';else if(dn>.12)g.fillStyle='#9aa184';else continue;g.fillRect(x0,y0,CS+.01,CS+.01)}
+    g.fillStyle='#78a356';parks.forEach(p=>{g.beginPath();g.arc(p[0],p[1],p[2],0,7);g.fill()});
+    g.lineCap='round';g.strokeStyle='#7fb05c';g.lineWidth=3.2;g.beginPath();river.forEach((p,i)=>i?g.lineTo(p.x,p.y):g.moveTo(p.x,p.y));g.stroke();g.strokeStyle='#3f86b8';g.lineWidth=1.3;g.stroke();
+    g.strokeStyle='#6d7075';g.lineWidth=.03;g.beginPath();for(let i=0;i<rp.length;i+=6){g.moveTo(rp[i],rp[i+2]);g.lineTo(rp[i+3],rp[i+5])}g.stroke();
+    g.strokeStyle='rgba(95,98,103,.55)';g.lineWidth=.014;g.beginPath();for(let j=0;j<NCY;j++)for(let i=0;i<NCX;i++){if(cellZone[j*NCX+i]<0)continue;const x0=GX0+i*CS,y0=GY0+j*CS;g.rect(x0,y0,CS,CS)}g.stroke();
+    const tx=new T.CanvasTexture(c);tx.colorSpace=T.SRGBColorSpace;tx.anisotropy=R.capabilities.getMaxAnisotropy();
+    const gm=new T.Mesh(new T.PlaneGeometry(WX,WY),new T.MeshStandardMaterial({map:tx,roughness:1}));gm.rotation.x=-Math.PI/2;gm.position.set(CX,.0006,CY);gm.receiveShadow=true;B3G.add(gm);
+    const w=new T.Mesh(rgeo,new T.MeshStandardMaterial({color:0x3c86b5,roughness:.1,metalness:.25,side:T.DoubleSide}));w.position.y=.0008;B3G.add(w)}
+  /* 산 */
+  {const NS=LITE3?160:300,S0=700,geo=new T.PlaneGeometry(S0,S0,NS,NS);geo.rotateX(-Math.PI/2);const p=geo.attributes.position,cl=[];
+    for(let i=0;i<p.count;i++){const x=p.getX(i)+CX,z=p.getZ(i)+CY,h=MH3(x,z);p.setY(i,h);const t=Math.min(1,h/1.1),rk=h>1.05?.12:0;cl.push(.24+.12*t+rk,.38+.06*t+rk*.8,.2+.05*t+rk)}
+    geo.setAttribute('color',new T.Float32BufferAttribute(cl,3));geo.computeVertexNormals();const m=new T.Mesh(geo,new T.MeshStandardMaterial({vertexColors:true,roughness:1,flatShading:true}));m.position.set(CX,-.002,CY);m.receiveShadow=true;B3G.add(m)}
+  /* 나무: 공원·녹지·산 */
+  {const L=[],NT=LITE3?18000:60000;let k=0;
+    while(L.length<NT*.6&&k++<NT*6){const p=parks[Math.floor(Math.random()*parks.length)],a=Math.random()*6.283,d=p[2]*Math.sqrt(Math.random()),x=p[0]+Math.cos(a)*d,z=p[1]+Math.sin(a)*d;if(Math.hypot((x-CX)/1.25,z-CY)>40)continue;L.push([x,z,.009+Math.random()*.006,0])}
+    for(let q=0;q<NT*.15;q++){const x=river[Math.floor(Math.random()*river.length)].x,sd=Math.random()<.5?-1:1;L.push([x,riverY(x)+sd*(.75+Math.random()*.5),.008+Math.random()*.005,0])}
+    while(L.length<NT){const a=Math.random()*6.283,r=50+Math.random()*30,x=CX+Math.cos(a)*r*1.25,z=CY+Math.sin(a)*r,h=MH3(x,z);if(h<.05)continue;L.push([x,z,.03+Math.random()*.03,h])}
+    const can=new T.IcosahedronGeometry(1,1),tr=new T.CylinderGeometry(.12,.16,1,5);tr.translate(0,.5,0);
+    const mc=new T.InstancedMesh(can,new T.MeshStandardMaterial({roughness:1,flatShading:true}),L.length),mt=new T.InstancedMesh(tr,new T.MeshStandardMaterial({color:0x6b4f3a}),L.length),d=new T.Object3D(),c=new T.Color();
+    L.forEach((t,i)=>{const s=t[2];d.position.set(t[0],t[3]+s*.55,t[1]);d.scale.set(s*.6,s*.55,s*.6);d.rotation.set(0,Math.random()*6,0);d.updateMatrix();mc.setMatrixAt(i,d.matrix);mc.setColorAt(i,c.setHSL(.25+Math.random()*.07,.42+Math.random()*.15,.26+Math.random()*.12));
+      d.position.set(t[0],t[3],t[1]);d.scale.set(s*.5,s*.6,s*.5);d.updateMatrix();mt.setMatrixAt(i,d.matrix)});mc.castShadow=!LITE3;mc.receiveShadow=true;B3G.add(mc,mt)}
+  B3G.visible=false;
+  function applyB3(){const on=b3&&!day;B3G.visible=on;$('n3B')&&($('n3B').textContent=b3?'🌙 밤 도시로':'☀️ 낮 도시로');if(day)return;
+    uDay.value=on?1:0;uNight.value=on?0:1;sc.background.set(on?0xc4dbee:0x05080d);sc.fog=on?fogD:fog0;
+    hemi.color.set(on?0xdfeeff:0x5d73a0);hemi.groundColor.set(on?0x8a8270:0x090b10);hemi.intensity=on?1.45:.7;moon.intensity=on?0:.55;sun.intensity=on?2.7:0;sun.castShadow=on&&!lite;
+    gnd.material.color.set(on?0x8d9e6e:0x0d131b);gnd.visible=true;roadLines.visible=riverM.visible=!on;parkMs.forEach(m=>m.visible=!on);
+    bloom.strength=on?.18:1.05;bloom.threshold=on?.97:.82;R.toneMappingExposure=on?1:1.05;updB(SN())}
+  function sunFit3(){const t=ctl.target,d=cam3.position.distanceTo(t),e=clamp(d*1.3,1.2,10);sun.position.copy(t).addScaledVector(SUNV3,60);sun.target.position.copy(t);
+    Object.assign(sun.shadow.camera,{left:-e,right:e,top:e,bottom:-e,near:1,far:160});sun.shadow.camera.updateProjectionMatrix();sun.target.updateMatrixWorld()}
+  const SUNV3=new T.Vector3(-3.6,5.2,2.4).normalize();
   /* 디오라마: 30km 미니어처 도시 (한국식 코드 생성 + Kenney CC0 모델) */
   const KMD=JSON.parse(document.getElementById('kmodels').textContent);
   const b64=s=>{const r=atob(s),u=new Uint8Array(r.length);for(let i=0;i<r.length;i++)u[i]=r.charCodeAt(i);return u.buffer};
@@ -1740,7 +1801,7 @@ a*=clamp(1.-(t-45.)/20.,0.,1.);vec4 mv=modelViewMatrix*vec4(p*uS,1.);gl_Position
       SD.forEach(o=>[...o.dec,...o.rim,...o.wall,...o.edge].forEach(e=>{G.remove(e.m);e.m.material.dispose()}));SD.clear()}
     return{update,reset,group:()=>G}})();
   const Q2r=new T.Quaternion(),Yr=new T.Vector3(0,1,0);
-  function setDay(on,cx,cy){day=on;uDay.value=on?1:0;uNight.value=1;
+  function setDay(on,cx,cy){day=on;uDay.value=on?1:0;uNight.value=1;B3G.visible=false;
     sc.background.set(on?0x1c1f33:0x05080d);sc.fog=on?null:fog0;
     hemi.color.set(on?0xd8e4ff:0x5d73a0);hemi.groundColor.set(on?0x6b6a3a:0x090b10);hemi.intensity=on?1.1:.7;moon.intensity=on?0:.55;sun.intensity=on?2.8:0;
     gnd.visible=roadLines.visible=riverM.visible=!on;parkMs.forEach(m=>m.visible=!on);
@@ -1748,7 +1809,7 @@ a*=clamp(1.-(t-45.)/20.,0.,1.);vec4 mv=modelViewMatrix*vec4(p*uS,1.);gl_Position
     if(on){buildDio(cx,cy);const c=new T.Vector3(cx,0,cy);ctl2.target.copy(c);ortho.position.copy(c).add(new T.Vector3(13,11.5,10));ortho.zoom=.5;ortho.updateProjectionMatrix();
       sun.target.position.set(cx,0,cy);shadowFit();setNight(night)}
     else if(dioG){sc.remove(dioG);dioG=null;TR=null;ROOF=null;CARS=null;PEO=null;RT=null;KI=null;LAMP=null;DR=null;KB.fill(0)}
-    $('dioC').hidden=!on;if(!on){WX3.rain.visible=WX3.snow.visible=false}grade.enabled=on&&mini;ctl.enabled=!on;ctl2.enabled=on;rpass.camera=on?ortho:cam3;orU.value=on?1:0;size();updB(SN())}
+    $('dioC').hidden=!on;if(!on){WX3.rain.visible=WX3.snow.visible=false}grade.enabled=on&&mini;ctl.enabled=!on;ctl2.enabled=on;rpass.camera=on?ortho:cam3;orU.value=on?1:0;size();if(!on)applyB3();updB(SN())}
   const SUNV=new T.Vector3(-4.2,7,-2.6).normalize();
   function shadowFit(){const t=ctl2.target,w=mw.clientWidth/mw.clientHeight,e=Math.min(17,HH/ortho.zoom*Math.max(1,w)*1.25);
     sun.position.copy(t).addScaledVector(SUNV,40);sun.target.position.copy(t);Object.assign(sun.shadow.camera,{left:-e,right:e,top:e,bottom:-e,near:1,far:90});sun.shadow.camera.updateProjectionMatrix();sun.target.updateMatrixWorld()}
@@ -1788,6 +1849,7 @@ a*=clamp(1.-(t-45.)/20.,0.,1.);vec4 mv=modelViewMatrix*vec4(p*uS,1.);gl_Position
       const zt=clamp((Math.log(ortho.zoom)-Math.log(.5))/(Math.log(20)-Math.log(.5)),0,1),amt=(1.1+1.9*zt)*blurK;
       ht.enabled=vt.enabled=mini&&amt>.05;ht.uniforms.h.value=amt/mw.clientWidth;vt.uniforms.v.value=amt/mw.clientHeight;ht.uniforms.r.value=vt.uniforms.r.value=.5;
       if(ddt>0){fpsE=fpsE*.95+(1/Math.max(ddt,.001))*.05;if(fpsE<24&&!lite){slowT+=ddt;if(slowT>4){lite=true;applyLite();msg('화면이 느려서 가벼운 모드로 바꿨어요 (사람·가로등·그림자 끔)')}}else slowT=0}}
+    if(!day&&b3&&!lite)sunFit3();
     const L=[];strikes.forEach(st=>{if(!st.g3)build(st);upd(st,now,L)});
     L.sort((a,b)=>b.i-a.i);PL.forEach((l,k)=>{const s=L[k];if(s){l.position.set(...s.p);l.color.setRGB(...s.c);l.intensity=s.i}else l.intensity=0});
     if(!cine){if(day){ctl2.autoRotate=$('rot').checked;ctl2.update()}else{ctl.autoRotate=$('rot').checked;ctl.update()}}composer.render();
@@ -1803,7 +1865,7 @@ a*=clamp(1.-(t-45.)/20.,0.,1.);vec4 mv=modelViewMatrix*vec4(p*uS,1.);gl_Position
   const _r=render;render=function(now){if(tz){const k=ease(clamp((now-tz.t0)/2600,0,1));if(k>0){ortho.zoom=tz.z0+(tz.z1-tz.z0)*k;ortho.updateProjectionMatrix()}if(k>=1)tz=null}if(tw){const k=ease(clamp((now-tw.t0)/2600,0,1));if(k>0){const q=tw.q0.clone().lerp(tw.q1,k),dir=tw.p0.clone().sub(tw.q0),d0=dir.length();dir.normalize();
       ctl.target.copy(q);cam3.position.copy(q).add(dir.multiplyScalar(d0+(tw.d-d0)*k))}if(k>=1)tw=null}_r(now)};
   el.addEventListener('pointerdown',()=>{tw=null;tz=null});el.addEventListener('wheel',()=>{tw=null;tz=null},{passive:true});
-  function home3(){if(day){const c=new T.Vector3(DR.cx,0,DR.cy);ctl2.target.copy(c);ortho.position.copy(c).add(new T.Vector3(13,11.5,10));ortho.zoom=.5;ortho.updateProjectionMatrix();return}cam3.position.set(CX+9,6.5,CY+15);ctl.target.set(CX,0,CY);ctl.update()}
+  function home3(){if(day){const c=new T.Vector3(DR.cx,0,DR.cy);ctl2.target.copy(c);ortho.position.copy(c).add(new T.Vector3(13,11.5,10));ortho.zoom=.5;ortho.updateProjectionMatrix();return}cam3.position.set(CX-1.9,.45,CY+2.9);ctl.target.set(CX+.1,.12,CY-.1);ctl.update()}
   function focus(st){if(day)return;const c=st.c[0]||st.path[0],w=W[st.w],r=Math.min(80,Math.max(3,(w.outer?w.outer.r:3)*1.6));ctl.target.set(c.x,0,c.y);const d=cam3.position.clone().sub(ctl.target).normalize().multiplyScalar(r);cam3.position.copy(ctl.target).add(d)}
   /* 시네마 카메라 */
   let cine=null;const Vc=new T.Vector3(),Vd=new T.Vector3(),Yup=new T.Vector3(0,1,0);
@@ -1833,7 +1895,8 @@ a*=clamp(1.-(t-45.)/20.,0.,1.);vec4 mv=modelViewMatrix*vec4(p*uS,1.);gl_Position
   function grab(){composer.render();return R.domElement}
   function lockCam(on){ctl.enabled=!on&&!day;ctl2.enabled=!on&&day;if(on)cineStop()}
   const _sync=sync;
-  return{saved:()=>PEO?PEO.saved||0:0,cineStart:st=>cineStart(st),scrub:()=>scrub(),snapAt:t=>snapAt(t),grab:()=>grab(),lockCam:on=>lockCam(on),setMood:(t,w)=>{moodT=t;moodW=w;applyMood()},isLite:()=>lite,setLite:on=>{lite=on;slowT=-1e9;applyLite()},setMini:on=>{mini=on;try{localStorage.setItem('sa-mini',on?'1':'0')}catch(e){}if(day){grade.enabled=on;ht.enabled=vt.enabled=on}},isMini:()=>mini,setNight:on=>setNight(on),isNight:()=>night,render:n=>render(n),sync:()=>{_sync();DFX.reset();recomputeTrees();if(CARS)resetMovers();updDio(SN(),0,true)},home3,focus,frame,syncDef,setDay,isDay:()=>day,target:()=>({x:ctl.target.x,y:ctl.target.z}),onStrike:st=>{treeApply(st)},updAll:()=>{updB(SN())}};
+  applyB3();
+  return{setB3:on=>{b3=on;try{localStorage.setItem('sa-3dnight',on?'0':'1')}catch(e){}applyB3()},isB3:()=>b3,saved:()=>PEO?PEO.saved||0:0,cineStart:st=>cineStart(st),scrub:()=>scrub(),snapAt:t=>snapAt(t),grab:()=>grab(),lockCam:on=>lockCam(on),setMood:(t,w)=>{moodT=t;moodW=w;applyMood()},isLite:()=>lite,setLite:on=>{lite=on;slowT=-1e9;applyLite()},setMini:on=>{mini=on;try{localStorage.setItem('sa-mini',on?'1':'0')}catch(e){}if(day){grade.enabled=on;ht.enabled=vt.enabled=on}},isMini:()=>mini,setNight:on=>setNight(on),isNight:()=>night,render:n=>render(n),sync:()=>{_sync();DFX.reset();recomputeTrees();if(CARS)resetMovers();updDio(SN(),0,true)},home3,focus,frame,syncDef,setDay,isDay:()=>day,target:()=>({x:ctl.target.x,y:ctl.target.z}),onStrike:st=>{treeApply(st)},updAll:()=>{updB(SN())}};
 }
 let modeN=0;
 /* ===== 지구본 (6단계) ===== */
@@ -2117,11 +2180,12 @@ async function setMode(n){
       c={x:clamp(c.x,GX0+15,WX-GX0-15),y:clamp(c.y,GY0+15,WY-GY0-15)};V3.setDay(true,c.x,c.y);{const n=V3.isMini(),l=V3.isLite();$('liteB').textContent=l?'가벼운 모드 켜짐':'가벼운 모드 꺼짐';$('liteB').setAttribute('aria-pressed',l);$('miniB').textContent=n?'미니어처 켜짐':'미니어처 꺼짐';$('miniB').setAttribute('aria-pressed',n)}msg('디오라마: 가로세로 30km(서울 크기) 구역을 미니어처로 보여 줘요')}
     else if(V3.isDay())V3.setDay(false)}
   if(n===1&&lastSt)V3.focus(lastSt);
-  if(n===0){dirty=true;$('c3').style.transform=''}hud();
+  if(n===0){dirty=true;$('c3').style.transform=''}$('n3B').hidden=n!==1;hud();
 }
 $('moodT').onchange=$('moodW').onchange=()=>{if(V3)V3.setMood($('moodT').value,$('moodW').value)};
 $('liteB').onclick=()=>{if(!V3)return;const n=!V3.isLite();V3.setLite(n);$('liteB').textContent=n?'가벼운 모드 켜짐':'가벼운 모드 꺼짐';$('liteB').setAttribute('aria-pressed',n)};
 $('miniB').onclick=()=>{if(!V3)return;const n=!V3.isMini();V3.setMini(n);$('miniB').textContent=n?'미니어처 켜짐':'미니어처 꺼짐';$('miniB').setAttribute('aria-pressed',n)};
+$('n3B').onclick=()=>{if(!V3)return;V3.setB3(!V3.isB3())};
 $('m2').onclick=()=>setMode(0);$('m3').onclick=()=>setMode(1);$('m4').onclick=()=>setMode(2);$('m5').onclick=()=>setMode(3);
 $('cvB').onclick=openCmpV;$('cvX').onclick=()=>{$('cmpV').hidden=true};$('cvFire').onclick=()=>CV&&CV.fire();
 [0,1].forEach(j=>{$('cvW'+j).onchange=()=>{delete $('cvK'+j).dataset.set;cvSide(j)};$('cvK'+j).oninput=()=>{$('cvK'+j).dataset.set=1;cvSide(j)};$('cvH'+j).onchange=()=>cvSide(j)});
