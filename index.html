@@ -187,13 +187,21 @@ body.photo #qs{display:none}
  #hud{top:40px!important;bottom:auto!important;right:12px;left:auto;text-align:right}
 }
 @media(prefers-reduced-motion:reduce){#side{transition:none}}
+#chBan{white-space:normal;border-radius:12px;max-width:min(720px,calc(100% - 24px))}#chT{line-height:1.45}#chT .pk{color:#9fd0ff;font-size:12.5px}
+.chC.lock{opacity:.55}#chRes .pts{font:700 30px Rajdhani,sans-serif;color:var(--acc);margin:6px 0}#chRes .pts small{font-size:14px;color:var(--mute)}#chRes .nb{font-size:14px;background:#2a1910;border:1px solid var(--acc);border-radius:999px;padding:2px 8px;vertical-align:middle}
+#chRes .brk{display:grid;grid-template-columns:1fr auto;gap:4px 16px;text-align:left;margin:8px auto 10px;max-width:360px;font-size:13.5px}#chRes .brk em{font-style:normal;color:var(--acc);text-align:right}
+#chBan button{white-space:nowrap;flex:none}#chT{flex:1;min-width:260px}
+#chDir{position:absolute;z-index:6;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;color:#ffb26b;font-size:12.5px;font-weight:600;text-shadow:0 1px 3px #000}
+#chDir[hidden]{display:none}#chDir .ar{width:0;height:0;border-top:11px solid transparent;border-bottom:11px solid transparent;border-left:22px solid #ffb26b;filter:drop-shadow(0 1px 2px #000);animation:chP 1s ease-in-out infinite alternate}@keyframes chP{from{opacity:.45}to{opacity:1}}#chDir .tx{background:rgba(10,13,18,.85);border:1px solid #ffb26b;border-radius:999px;padding:1px 8px}
+@media(prefers-reduced-motion:reduce){#chDir .ar{animation:none}}
+#chD .box,#chR .box{max-height:calc(100dvh - 32px);overflow-y:auto}
 </style>
 <script>if(/github\.io$/.test(location.hostname)){const l=document.createElement('link');l.rel='manifest';l.href='manifest.webmanifest';document.head.appendChild(l);const m=document.createElement('meta');m.name='theme-color';m.content='#0a0d12';document.head.appendChild(m);const a=document.createElement('link');a.rel='apple-touch-icon';a.href='icon-192.png';document.head.appendChild(a);if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}</script>
 </head>
 <body>
 <div id="pview" hidden><img id="pImg" alt="저장할 사진"><p>저장이 자동으로 안 되면 사진을 길게 누르거나(휴대폰) 오른쪽 클릭(컴퓨터)으로 저장해 주세요.</p><button id="pvX">닫기</button></div>
 <div id="chD" hidden role="dialog" aria-modal="true" aria-labelledby="chH"><div class="box"><h2 id="chH">🛡 방어 챌린지</h2>
-<p>정해진 예산으로 방어 체계를 배치한 뒤, 3번 몰려오는 공격 웨이브에서 도시를 지켜요. 별은 <b>요격률</b>과 <b>지킨 건물</b> 두 가지 중 낮은 쪽으로 정해져요.<br>★ 요격 40%·건물 90% 이상 · ★★ 요격 60%·건물 97% 이상 · ★★★ 요격 80%·건물 99% 이상</p>
+<p>정해진 예산으로 방어 체계를 배치한 뒤, 여러 번 몰려오는 공격 웨이브에서 도시를 지켜요. 웨이브 사이에는 <b>정비 시간</b>이 있어 예산을 더 받고 방어를 보탤 수 있어요. 배너의 <b>웨이브 예고</b>(방향·무기)를 보고 배치하세요. 별은 <b>요격률</b>과 <b>지킨 건물</b> 두 가지 중 낮은 쪽으로 정해져요.<br>★ 요격 40%·건물 90% 이상 · ★★ 요격 60%·건물 97% 이상 · ★★★ 요격 80%·건물 99% 이상</p>
 <div id="chList"></div><div class="row" style="justify-content:flex-end;margin-top:12px"><button id="chX">닫기</button></div></div></div>
 <div id="chR" hidden role="dialog" aria-modal="true" aria-labelledby="chRH"><div class="box" style="text-align:center"><h2 id="chRH">결과</h2><div id="chStars"></div><div id="chRes"></div>
 <div class="row" style="justify-content:center;margin-top:14px"><button id="chRetry">다시 도전</button><button id="chNext" class="pri">다음 단계</button><button id="chRX">끝내기</button></div></div></div>
@@ -265,6 +273,7 @@ body.photo #qs{display:none}
     <div class="cvTop"><div class="cvSide"><select id="cvW0" aria-label="왼쪽 무기"></select><span id="cvKw0"><select id="cvH0" aria-label="폭발 높이"><option value="air">공중</option><option value="surf">지표</option></select><input type="range" id="cvK0" min="0" max="100" aria-label="위력"><b id="cvKv0"></b></span></div><div class="cvSide"><select id="cvW1" aria-label="오른쪽 무기"></select><span id="cvKw1"><select id="cvH1" aria-label="폭발 높이"><option value="air">공중</option><option value="surf">지표</option></select><input type="range" id="cvK1" min="0" max="100" aria-label="위력"><b id="cvKv1"></b></span></div></div>
     <div class="cvBar"><button id="cvFire">💥 동시에 터뜨리기</button><button id="cvX">비교 끝내기</button></div>
     <div id="cvS0" class="cvS" style="left:12px"></div><div id="cvS1" class="cvS" style="right:12px"></div></div>
+  <div id="chDir" hidden aria-hidden="true"><span class="ar"></span><span class="tx"></span></div>
   <div id="chBan" hidden><span id="chT"></span><button id="chGo">▶ 웨이브 시작</button><button id="chQuit">그만하기</button></div>
   <div id="scnBan" hidden><span id="scnT"></span><button id="scnStop">■ 멈추기</button></div>
   <div class="simtag">SIMULATION · 시뮬레이션</div>
@@ -686,7 +695,7 @@ function recomputeLights(){lightOff.fill(Infinity);strikes.forEach(applyKills)}
 function intercept(st,w){const tab=VS[w.fx.app];if(!tab||w.band||w.flood||!DEFS.some(d=>DT[d.t].ic))return;
   st.x=[];st.xs=[];let any=false;
   st.c.forEach((c,i)=>{let miss=1,best=null,bp=0;const rad=DEFS.some(d=>d.t===0&&Math.hypot(d.x-c.x,d.y-c.y)<DT[0].r);
-    DEFS.forEach(d=>{const p=tab[DT[d.t].id];if(!p||Math.hypot(d.x-c.x,d.y-c.y)>DT[d.t].r)return;const pe=Math.min(.95,rad?p+.15:p*.85)*(w.decoy?.35:1);miss*=1-pe;if(pe>bp){bp=pe;best=d}});
+    DEFS.forEach(d=>{const p=tab[DT[d.t].id];if(!p||Math.hypot(d.x-c.x,d.y-c.y)>DT[d.t].r)return;const pe=Math.min(.95,rad?p+.15:p*.85)*(w.decoy?.35:1)*(CH&&CH.ecm?.8:1);miss*=1-pe;if(pe>bp){bp=pe;best=d}});
     const hit=!!best&&Math.random()>miss;st.x[i]=hit;st.xs[i]=best;if(hit)any=true});
   st.tried=st.xs.some(Boolean);
   if(!any){st.x=null}else st.ti=st.c.map((c,i)=>{const ta=st.td[i]-(w.fx.hold||0)*1000;return st.t0+(ta-st.t0)*.72})}
@@ -2238,33 +2247,52 @@ if(NARROW()){$('legend').classList.add('min');$('camOn').checked=false;$('camOn'
 $('grid').addEventListener('click',e=>{if(!NARROW()||e.target.closest('.star'))return;const b=e.target.closest('.wp');if(!b)return;setTimeout(()=>{if(sideOpen())sideSet(false);msg(selDef>=0?'지도를 탭하면 방어 체계를 놓아요':'지도를 탭하면 발사해요 · 두 손가락으로 확대·이동')},150)});
 /* ===== 방어 챌린지 ===== */
 const CHS=[
- {n:'1단계 · 연습',d:'순항미사일·로켓·드론·단거리 탄도탄을 막아요.',budget:60,waves:[[[0,3]],[[25,2],[28,2]],[[31,3]]]},
- {n:'2단계 · 실전',d:'드론 떼와 정밀 유도 무기, 마지막엔 전술핵 1발이 섞여 와요.',budget:80,waves:[[[28,3],[26,2]],[[0,3],[32,2],[1,1]],[[31,3],[13,1,5]]]},
- {n:'3단계 · 총력전',d:'헬기·극초음속·함대지 미사일, 마지막엔 기만체 다탄두까지 와요.',budget:100,waves:[[[28,4],[58,2]],[[1,2],[33,2],[0,3]],[[42,1,15],[31,2]]]}];
+ {n:'1단계 · 연습',d:'순항미사일·로켓·드론·단거리 탄도탄을 막아요.',budget:60,dirs:[0,4.7,2.4],waves:[[[0,3]],[[25,2],[28,2]],[[31,3]]]},
+ {n:'2단계 · 실전',d:'드론 떼와 정밀 유도 무기, 마지막엔 전술핵 1발이 섞여 와요.',budget:80,dirs:[5.5,3.1,0.8],waves:[[[28,3],[26,2]],[[0,3],[32,2],[1,1]],[[31,3],[13,1,5]]]},
+ {n:'3단계 · 총력전',d:'헬기·극초음속·함대지 미사일, 마지막엔 기만체 다탄두까지 와요.',budget:100,dirs:[1.6,4.0,5.5],waves:[[[28,4],[58,2]],[[1,2],[33,2],[0,3]],[[42,1,15],[31,2]]]},
+ {n:'4단계 · 포위',d:'사방에서 동시에 날아와요. 방어를 한쪽에 몰면 뚫려요.',budget:110,dirs:[null,null,null],waves:[[[0,4],[28,4]],[[26,3],[61,3],[60,2]],[[31,4],[1,2],[13,1,5]]]},
+ {n:'5단계 · 전자전',d:'상대가 전파를 교란해서 모든 요격 확률이 20% 떨어져요. 레이더를 꼭 챙기세요.',budget:120,ecm:true,dirs:[3.9,0.4,2.2],waves:[[[28,5],[61,3]],[[0,4],[32,3],[33,1]],[[42,1,15],[1,2],[31,2]]]},
+ {n:'6단계 · 최종 방어',d:'4번의 웨이브. 마지막에는 다탄두 ICBM과 극초음속 핵이 함께 와요.',budget:140,dirs:[4.7,1.6,null,5.2],waves:[[[28,5],[58,3],[26,3]],[[1,3],[33,2],[31,3]],[[0,4],[61,3],[60,3]],[[2,1,100],[42,1,15],[38,1]]]}];
+const CHN=()=>CHS[CH.i].waves.length;
+function chDirUpd(show){const el=$('chDir'),a=CH&&CHS[CH.i].dirs[CH.w];if(!show||a==null||CH.w>=CHN()){el.hidden=true;return}el.hidden=false;
+  el.style.left=(50+Math.cos(a)*40)+'%';el.style.top=(52+Math.sin(a)*36)+'%';el.querySelector('.ar').style.transform=`rotate(${a+Math.PI}rad)`;el.querySelector('.tx').textContent=dirName(a)+'쪽에서 접근 예상'}
 function chBest(i){try{return +(localStorage.getItem('sa-ch'+i)||0)}catch(e){return 0}}
-function chOpen(){$('chList').innerHTML=CHS.map((c,i)=>{const b=chBest(i);return`<button class="chC" data-ch="${i}"><b>${c.n}</b><span>${c.d}</span><small>예산 ${c.budget}점 · 웨이브 3번 · 최고 기록 ${'★'.repeat(b)+'☆'.repeat(3-b)}</small></button>`}).join('');$('chD').hidden=false;$('chX').focus()}
-function chBar(){if(!CH)return;$('chBan').hidden=false;$('chGo').hidden=CH.phase!=='place';
-  $('chT').textContent=CH.phase==='place'?`🛡 ${CHS[CH.i].n} · 방어 배치 (예산 ${budgetUsed()}/${CH.budget}) · 방어 탭에서 골라 지도를 클릭`:CH.phase==='wave'?`🛡 웨이브 ${CH.w+1}/3 진행 중 · 요격 ${CH.ok}발`:'🛡 결과 계산 중…'}
+function chPts(i){try{return +(localStorage.getItem('sa-chp'+i)||0)}catch(e){return 0}}
+const chOpenOK=i=>i===0||chBest(i-1)>=1;
+function dirName(a){if(a==null)return'사방';const d=['동','남동','남','남서','서','북서','북','북동'];return d[Math.round(((a%6.2832)+6.2832)%6.2832/0.7854)%8]}
+function wavePeek(){const c=CHS[CH.i],wv=c.waves[CH.w];if(!wv)return'';const m={};wv.forEach(([b,n])=>{m[b]=(m[b]||0)+n});
+  return`다음 웨이브 ${CH.w+1}/${CHN()} · ${dirName(c.dirs[CH.w])}쪽에서 · `+Object.entries(m).map(([b,n])=>`${W[b].name} ${n}`).join(', ')}
+function chOpen(){$('chList').innerHTML=CHS.map((c,i)=>{const b=chBest(i),ok=chOpenOK(i),p=chPts(i);return`<button class="chC${ok?'':' lock'}" data-ch="${i}"><b>${ok?'':'🔒 '}${c.n}</b><span>${c.d}</span><small>예산 ${c.budget}점 · 웨이브 ${c.waves.length}번${c.ecm?' · 전파 교란':''} · 최고 ${'★'.repeat(b)+'☆'.repeat(3-b)}${p?` · ${p.toLocaleString('ko-KR')}점`:''}${ok?'':' · 앞 단계에서 별 1개 이상이면 열려요'}</small></button>`}).join('');$('chD').hidden=false;$('chX').focus()}
+function chBar(){if(!CH)return;$('chBan').hidden=false;const pre=CH.phase==='place'||CH.phase==='repair';chDirUpd(pre);$('chGo').hidden=!pre;$('chGo').textContent=CH.phase==='repair'?'▶ 다음 웨이브':'▶ 웨이브 시작';
+  $('chT').innerHTML=CH.phase==='place'?`🛡 ${CHS[CH.i].n} · 방어 배치 (예산 ${budgetUsed()}/${CH.budget})${CH.ecm?' · 📡 전파 교란 중':''}<br><span class="pk">${wavePeek()}</span>`
+   :CH.phase==='repair'?`🔧 정비 시간 · 예산 +${CH.bonus}점 받음 (${budgetUsed()}/${CH.budget}) · 방어를 더 놓을 수 있어요<br><span class="pk">${wavePeek()}</span>`
+   :CH.phase==='wave'?`🛡 웨이브 ${CH.w+1}/${CHN()} 진행 중 · ${dirName(CHS[CH.i].dirs[CH.w])}쪽 · 막은 위협 ${CH.ok.toFixed(1)}/${CH.tot}`:'🛡 결과 계산 중…'}
 const chCore=()=>{const R=9,a=[];for(let k=0;k<blocks.length;k++){const b=blocks[k],x=b[0]+b[2]/2-CX,y=b[1]+b[3]/2-CY;if(x*x+y*y<R*R)a.push(k)}return a};
-async function chStart(i){$('chD').hidden=true;$('chR').hidden=true;if(modeN===3)await setMode(0);SCN++;$('scnBan').hidden=true;
-  CH={i,budget:CHS[i].budget,phase:'place',w:0,ok:0,tot:0,tok:Math.random()};CH.auto=true;$('clear').onclick();CH.auto=false;DEFS=[];if(V3)V3.syncDef();updBudget();renderLegend();
+async function chStart(i){if(!chOpenOK(i)){msg('앞 단계에서 별 1개 이상을 받으면 열려요');return}$('chD').hidden=true;$('chR').hidden=true;if(modeN===3)await setMode(0);SCN++;$('scnBan').hidden=true;
+  CH={i,budget:CHS[i].budget,phase:'place',w:0,ok:0,tot:0,wok:0,ecm:!!CHS[i].ecm,bonus:0,tok:Math.random()};CH.auto=true;$('clear').onclick();CH.auto=false;DEFS=[];if(V3)V3.syncDef();updBudget();renderLegend();
   cam.x=CX;cam.y=CY;if(modeN===0)home();tab='def';selDef=-1;renderGrid();if(!sideOpen())sideSet(true);chBar();log(`방어 챌린지 시작 · ${CHS[i].n} · 예산 ${CH.budget}점`,'w');
   msg('방어 탭에서 방어 체계를 골라 지도에 놓은 뒤 "웨이브 시작"을 누르세요')}
-function chWave(){if(!CH)return;const tok=CH.tok,c=CHS[CH.i],wv=c.waves[CH.w];CH.phase='wave';selDef=-1;renderGrid();if(SHEET()&&sideOpen())sideSet(false);chBar();log(`웨이브 ${CH.w+1} 접근`,'d');
+function chWave(){if(!CH)return;const tok=CH.tok,c=CHS[CH.i],wv=c.waves[CH.w],dir=c.dirs[CH.w];CH.phase='wave';CH.wok=0;selDef=-1;renderGrid();if(SHEET()&&sideOpen())sideSet(false);chBar();log(`웨이브 ${CH.w+1} 접근 · ${dirName(dir)}쪽`,'d');
   const L=[];wv.forEach(([b,n,kt])=>{for(let q=0;q<n;q++)L.push([b,kt])});L.sort(()=>Math.random()-.5);let k=0;const h0=$('hmode').value,s0=sel;
-  const fire=()=>{if(!CH||CH.tok!==tok)return;if(k>=L.length){setTimeout(()=>{if(!CH||CH.tok!==tok)return;CH.w++;if(CH.w<3){log('다음 웨이브까지 잠시 대기','w');setTimeout(()=>{if(CH&&CH.tok===tok)chWave()},3500)}else chEnd()},7000);return}
-    const [b,kt]=L[k++],a=Math.random()*6.283,r=1+Math.random()*6;sel=b;if(kt)ktSel[b]=kt;$('hmode').value='air';CH.auto=true;const n0=strikes.length;strike([{x:CX+Math.cos(a)*r,y:CY+Math.sin(a)*r}],false);CH.auto=false;$('hmode').value=h0;sel=s0;
-    const st=strikes[strikes.length-1];if(strikes.length>n0&&st){const n=st.c.length;CH.tot+=n;if(st.x)CH.ok+=st.x.filter(Boolean).length}chBar();setTimeout(fire,1400+Math.random()*1200)};fire()}
+  const fire=()=>{if(!CH||CH.tok!==tok)return;if(k>=L.length){setTimeout(()=>{if(!CH||CH.tok!==tok)return;CH.w++;if(CH.w<CHN()){CH.bonus=8+Math.round(CH.wok*4);CH.budget+=CH.bonus;CH.phase='repair';chBar();log(`웨이브 끝 · 정비 시간 (예산 +${CH.bonus}점)`,'w');msg('정비 시간이에요. 방어를 더 놓고 "다음 웨이브"를 누르세요');if(!sideOpen()&&!SHEET())sideSet(true)}else chEnd()},7000);return}
+    const [b,kt]=L[k++],a=dir==null?Math.random()*6.283:dir+(Math.random()-.5)*1.4,r=dir==null?1+Math.random()*6:2+Math.random()*5.5;sel=b;if(kt)ktSel[b]=kt;$('hmode').value='air';CH.auto=true;const n0=strikes.length;strike([{x:CX+Math.cos(a)*r,y:CY+Math.sin(a)*r}],false);CH.auto=false;$('hmode').value=h0;sel=s0;
+    const st=strikes[strikes.length-1];if(strikes.length>n0&&st){const n=st.c.length;CH.tot+=1;if(st.x&&n){const o=st.x.filter(Boolean).length/n;CH.ok+=o;CH.wok+=o}}chBar();setTimeout(fire,1400+Math.random()*1200)};fire()}
 function chEnd(){if(!CH)return;CH.phase='end';chBar();const tok=CH.tok;setTimeout(()=>{if(!CH||CH.tok!==tok)return;const core=chCore(),now=SN();let lost=0;core.forEach(k=>{if(hitS[k]>=2&&hitT[k]<=now)lost++});
-  const keep=core.length?1-lost/core.length:1,ir=CH.tot?CH.ok/CH.tot:1,sk=keep>=.99?3:keep>=.97?2:keep>=.9?1:0,si=ir>=.8?3:ir>=.6?2:ir>=.4?1:0,st=Math.min(sk,si),i=CH.i;if(st>chBest(i))try{localStorage.setItem('sa-ch'+i,st)}catch(e){}
+  const keep=core.length?1-lost/core.length:1,ir=CH.tot?CH.ok/CH.tot:1,sk=keep>=.99?3:keep>=.97?2:keep>=.9?1:0,si=ir>=.8?3:ir>=.6?2:ir>=.4?1:0,st=Math.min(sk,si),i=CH.i,left=Math.max(0,CH.budget-budgetUsed()),
+    pts=Math.round(keep*600+ir*300+left*3+st*100),best=chPts(i),nb=pts>best;
+  try{if(st>chBest(i))localStorage.setItem('sa-ch'+i,st);if(nb)localStorage.setItem('sa-chp'+i,pts)}catch(e){}
   $('chStars').innerHTML=[0,1,2].map(j=>j<st?'★':'<span class="off">★</span>').join('');
-  $('chRes').innerHTML=`${CHS[i].n}<br>지킨 건물 <b>${(keep*100).toFixed(1)}%</b> (${(core.length-lost).toLocaleString('ko-KR')} / ${core.length.toLocaleString('ko-KR')}동)<br>요격 <b>${CH.ok} / ${CH.tot}발 (${Math.round(ir*100)}%)</b> · 사용 예산 ${budgetUsed()}/${CH.budget}점<br><span style="color:var(--mute);font-size:13px">${st===3?'완벽한 방어예요!':st?'조금만 더! 방어 위치와 종류를 바꿔 보세요.':'드론·로켓은 근접 방어포·요격 드론, 탄도탄은 고고도·중고도 요격이 잘 막아요.'}</span>`;
-  $('chNext').hidden=i>=CHS.length-1;$('chR').hidden=false;$('chBan').hidden=true;log(`방어 챌린지 결과 · 별 ${st}개 · 지킨 건물 ${(keep*100).toFixed(1)}%`,'w');CH.done=true},6000)}
-function chQuit(){if(!CH)return;CH=null;$('chBan').hidden=true;$('chR').hidden=true;updBudget();renderGrid();log('방어 챌린지 종료','w')}
+  $('chRes').innerHTML=`${CHS[i].n}<div class="pts">${pts.toLocaleString('ko-KR')}점${nb?' <span class="nb">최고 기록!</span>':` <small>(최고 ${best.toLocaleString('ko-KR')}점)</small>`}</div>
+   <div class="brk"><span>지킨 건물 <b>${(keep*100).toFixed(1)}%</b> · ${(core.length-lost).toLocaleString('ko-KR')}/${core.length.toLocaleString('ko-KR')}동</span><em>+${Math.round(keep*600)}</em>
+   <span>요격 <b>${Math.round(ir*100)}%</b> · 위협 ${CH.tot}개 평균</span><em>+${Math.round(ir*300)}</em>
+   <span>남은 예산 <b>${left}점</b></span><em>+${left*3}</em><span>별 보너스</span><em>+${st*100}</em></div>
+   <span style="color:var(--mute);font-size:13px">${st===3?'완벽한 방어예요!':st?'조금만 더! 방어 위치와 종류를 바꿔 보세요.':'드론·로켓은 근접 방어포·요격 드론, 탄도탄은 고고도·중고도 요격이 잘 막아요. 웨이브 예고의 방향을 보고 그쪽에 배치해 보세요.'}</span>`;
+  $('chDir').hidden=true;$('chNext').hidden=i>=CHS.length-1||!chOpenOK(i+1);$('chR').hidden=false;$('chBan').hidden=true;log(`방어 챌린지 결과 · 별 ${st}개 · ${pts}점`,'w');CH.done=true},6000)}
+function chQuit(){if(!CH)return;CH=null;$('chDir').hidden=true;$('chBan').hidden=true;$('chR').hidden=true;updBudget();renderGrid();log('방어 챌린지 종료','w')}
 $('chB').onclick=chOpen;$('chX').onclick=()=>{$('chD').hidden=true};$('chList').addEventListener('click',e=>{const b=e.target.closest('[data-ch]');if(b)chStart(+b.dataset.ch)});
-$('chGo').onclick=()=>{if(!CH||CH.phase!=='place')return;if(!DEFS.length&&!confirmNoDef()){return}chWave()};
+$('chGo').onclick=()=>{if(!CH||(CH.phase!=='place'&&CH.phase!=='repair'))return;if(!DEFS.length&&!confirmNoDef()){return}chWave()};
 let noDefWarn=0;function confirmNoDef(){if(noDefWarn++)return true;msg('방어 체계가 하나도 없어요. 그래도 시작하려면 한 번 더 누르세요');return false}
-$('chQuit').onclick=chQuit;$('chRX').onclick=chQuit;$('chRetry').onclick=()=>{const i=CH?CH.i:0;CH=null;chStart(i)};$('chNext').onclick=()=>{const i=CH?CH.i+1:0;CH=null;chStart(i)};
+$('chQuit').onclick=chQuit;
 /* ===== 녹화 ===== */
 let REC=null;
 function recSrc(){return modeN===3?$('cg'):mode3?$('c3'):cv}
