@@ -238,7 +238,7 @@ body.photo #qs{display:none}
   <span class="seg" role="group" aria-label="보기 방식"><button id="m2" aria-pressed="true">2D 지도</button><button id="m3" aria-pressed="false">3D 시점</button><button id="m4" aria-pressed="false">디오라마</button><button id="m5" aria-pressed="false">🌏 지구본</button></span>
   <span id="rotL" hidden><label><input type="checkbox" id="rot" style="accent-color:var(--acc);width:18px;height:18px"> 자동 회전</label><button id="n3B" hidden>🌙 밤 도시로</button> <span id="dioC" hidden style="display:inline-flex;gap:6px;align-items:center;margin-left:6px"><select id="moodT" aria-label="시간대"><option value="day">☀️ 낮</option><option value="sunset">🌇 노을</option><option value="night">🌙 밤</option></select><select id="moodW" aria-label="날씨"><option value="clear">맑음</option><option value="rain">🌧 비</option><option value="snow">❄️ 눈</option></select><button id="miniB" aria-pressed="true">미니어처 켜짐</button><button id="liteB" aria-pressed="false">가벼운 모드 꺼짐</button><button id="pipB" aria-pressed="false">🌏 작은 지구본</button><label><input type="checkbox" id="tflow" style="accent-color:var(--acc);width:18px;height:18px"> 🌅 시간 흐름</label></span> <span id="camd"></span></span>
   <span>선택: <span id="sel"></span></span>
-  <span id="nkC" hidden style="display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap"><label>폭발 높이 <select id="hmode"><option value="air">공중 폭발</option><option value="surf">지표 폭발</option><option value="under">지하 폭발</option><option value="water">수중 폭발</option><option value="high">고고도 폭발</option></select></label><label for="kt">위력 <input type="range" id="kt" min="0" max="100" step="1" style="width:150px"> <b id="ktv" style="color:var(--acc);min-width:52px;display:inline-block"></b></label><label id="mvL" for="mv" hidden>탄두 수 <input type="range" id="mv" min="1" max="20" step="1" style="width:140px"> <b id="mvv" style="color:var(--acc);min-width:44px;display:inline-block"></b></label></span>
+  <span id="nkC" hidden style="display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap"><label>폭발 높이 <select id="hmode"><option value="air">공중 폭발</option><option value="surf">지표 폭발</option><option value="under">지하 폭발</option><option value="water">수중 폭발</option><option value="high">고고도 폭발</option></select></label><label for="kt">위력 <input type="range" id="kt" min="0" max="100" step="1" style="width:150px"> <b id="ktv" style="color:var(--acc);min-width:52px;display:inline-block"></b></label><label id="mvL" for="mv" hidden>탄두 수 <input type="range" id="mv" min="1" max="15" step="1" style="width:140px"> <b id="mvv" style="color:var(--acc);min-width:44px;display:inline-block"></b></label></span>
   <label class="adv" for="wind">낙진 방향 <input type="range" id="wind" min="0" max="355" step="5" value="90"> <span id="windv"></span></label>
   <span class="adv lvl g" id="lvl" data-v="g">평시</span>
   <span id="cnt"></span>
@@ -266,7 +266,7 @@ body.photo #qs{display:none}
 </aside>
 <div class="mapwrap" id="mw">
   <div id="gLab" aria-hidden="true"></div><canvas id="cg" aria-label="지구본. 처음 클릭은 발사 지점, 다음 클릭부터 목표 지점입니다."></canvas><div id="gFx"></div>
-  <div id="gPanel"><div id="gStep"></div><div id="gRoute"></div><div id="gInfo"></div><div id="gDef" style="color:var(--mute);font-size:13px"></div><button id="gDown" hidden>🔍 디오라마로 내려가기</button>
+  <div id="gPanel"><div id="gStep"></div><div id="gRoute"></div><div id="gInfo"></div><div id="gFall" style="color:#ffb070;font-size:13px;font-weight:700"></div><div id="gDef" style="color:var(--mute);font-size:13px"></div><button id="gDown" hidden>🔍 디오라마로 내려가기</button>
     <div class="gRow"><label><input type="checkbox" id="gBorder"> 국경선</label><label><input type="checkbox" id="gCloud" checked> 구름</label><label><input type="checkbox" id="gName" checked> 지명</label><span id="gAlt"></span></div>
     <div class="gNote">지명·국경은 공개 지도 자료(Natural Earth) 기준 · 지형은 단순화한 그림 · 비행 시간은 게임용으로 압축 · 방어 탭에서 고르면 지구본에도 기지를 놓을 수 있어요 (요격 반경은 지구 규모로 확대)</div></div>
   <canvas id="c3" aria-label="3D 도시 시점. 클릭하면 선택한 무기로 타격합니다."></canvas><div id="tint3"></div><div id="fx3"></div>
@@ -311,7 +311,7 @@ const conv=(a,b,c)=>[{k:'light',label:'파편·충격 영향',r:c},{k:'mod',labe
 const W=[
  {name:'전술 순항미사일',desc:'저고도 초음속 정밀 타격',tag:1,input:'click',layers:conv(.05,.12,.3)},
  {name:'극초음속 활공체',desc:'마하 12 플라즈마 충격파',tag:1,input:'click',layers:conv(.08,.2,.5)},
- {name:'ICBM 다탄두 (MIRV 7)',desc:'상공에서 독립 탄두 분리 · 1~20발 조절',tag:1,input:'click',mv:1,pattern:{type:'scatter',n:7,spread:9},layers:nuke(.3),info:'탄두당 300kt 가정 · 7발이 약 9km 범위에 분산'},
+ {name:'ICBM 다탄두 (MIRV 7)',desc:'상공에서 독립 탄두 분리 · 1~15발 조절',tag:1,input:'click',mv:1,pattern:{type:'scatter',n:7,spread:9},layers:nuke(.3),info:'탄두당 300kt 가정 · 7발이 약 9km 범위에 분산'},
  {name:'차르 봄바 (100Mt)',desc:'초대형 수소폭탄 · 3중 충격파',tag:1,input:'click',layers:nuke(100),info:'설계 위력 100Mt 기준 (실제 시험은 약 50Mt)'},
  {name:'지중 관통 벙커버스터',desc:'지하 관통 · 인공지진 및 암석 분출',tag:1,input:'click',layers:[{k:'light',label:'지진동 감지',r:.6},{k:'mod',label:'지하 구조물 손상',r:.15},{k:'crat',label:'분화구·암석 분출',r:.05}]},
  {name:'B-2 스텔스 융단폭격',desc:'스텔스 5기 편대 · 15발 연속 투하',tag:1,input:'drag',pattern:{type:'line',n:15,len:3.5},layers:conv(.04,.1,.25),info:'드래그한 방향으로 15발 투하 (클릭만 하면 동쪽으로 3.5km)'},
@@ -351,7 +351,7 @@ const W=[
  ,{name:'낙하산 지연 핵폭탄',desc:'낙하산이 천천히 내려오다 폭발',tag:1,input:'click',layers:nuke(.3),nk:1,info:'300kt 가정 · 폭격기 투하'}
  ,{name:'지하 관통 핵',desc:'땅에 꽂힌 뒤 잠시 조용 · 땅이 솟구침',tag:1,input:'click',layers:nuke(.3),nk:1,fm:'under',info:'300kt 가정 · 지하 폭발 고정'}
  ,{name:'항만 수중 핵',desc:'거대한 물기둥과 물안개 고리',tag:2,input:'click',layers:nuke(.1),nk:1,fm:'water',info:'100kt 가정 · 강에서 수중 폭발 고정'}
- ,{name:'기만체 다탄두',desc:'진짜·가짜 탄두가 섞여 방어망을 교란 · 1~20발 조절',tag:1,input:'click',mv:1,pattern:{type:'scatter',n:6,spread:7},layers:nuke(.15),nk:1,decoy:1,info:'진짜 탄두 6기(150kt) + 기만체 · 요격 확률이 크게 낮아짐'}
+ ,{name:'기만체 다탄두',desc:'진짜·가짜 탄두가 섞여 방어망을 교란 · 1~15발 조절',tag:1,input:'click',mv:1,pattern:{type:'scatter',n:6,spread:7},layers:nuke(.15),nk:1,decoy:1,info:'진짜 탄두 6기(150kt) + 기만체 · 요격 확률이 크게 낮아짐'}
  ,{name:'대규모 정전 공격',desc:'폭발 없이 도시 불빛이 구역별로 꺼짐',tag:2,input:'click',layers:[{k:'emp',label:'정전 구역',r:14}],info:'신호등·차량 멈춤 · 건물 피해 없음 · 밤에 잘 보여요'}
  ,{name:'고출력 전파 무기',desc:'반투명 파동 · 차량과 전자기기만 정지',tag:2,input:'click',layers:[{k:'emp',label:'전자장비 마비',r:3}],info:'EMP보다 좁고 정확 · 건물 피해 없음'}
  ,{name:'방사능 오염 확산',desc:'작은 폭발 뒤 오염 구역이 바람 따라 번짐',tag:3,input:'click',plume:{len:25,w:5},layers:[{k:'light',label:'폭발 영향',r:.12},{k:'mod',label:'건물 파손',r:.03}],info:'건물은 대부분 멀쩡 · 오염 범위는 연출용 (낙진 방향으로 조절)'}
@@ -384,7 +384,7 @@ const W=[
 const FX=[
  {app:'cruise',D:.8,flash:.35,fdur:.25,fcol:'#ffd9a0',shake:6,tint:.08},
  {app:'glide',D:.7,flash:.45,fdur:.3,fcol:'#ffe2b8',shake:8,tint:.1},
- {app:'mirv',D:1.6,stag:.22,flash:.5,fdur:.6,fcol:'#fffbe8',shake:16,tint:.3,nuke:1,kt:300},
+ {app:'mirv',D:1.6,sep:.11,stag:.22,flash:.5,fdur:.6,fcol:'#fffbe8',shake:16,tint:.3,nuke:1,kt:300},
  {app:'ballistic',D:1.3,flash:.6,fdur:1.4,fcol:'#ffffff',shake:34,tint:.5,nuke:1,kt:100000},
  {app:'ballistic',D:.6,flash:.2,fdur:.2,fcol:'#ffcf9a',shake:16,tint:.05,hold:.8},
  {app:'bomber',D:1,stag:.09,flash:.25,fdur:.15,fcol:'#ffd39a',shake:4,tint:.1},
@@ -424,7 +424,7 @@ const FX=[
  {app:'chute',D:3.2,flash:.5,fdur:.6,fcol:'#fffbe8',shake:16,tint:.28,nuke:1,kt:300},
  {app:'ballistic',D:.8,flash:.12,fdur:.2,fcol:'#ffcf9a',shake:30,tint:.12,nuke:1,kt:300,hold:1.2},
  {app:'torpedo',D:1.6,flash:.35,fdur:.5,fcol:'#e8f4ff',shake:16,tint:.18,tcol:'#3a7bd5',nuke:1,kt:100},
- {app:'mirv',D:1.7,stag:.25,flash:.45,fdur:.6,fcol:'#fffbe8',shake:14,tint:.26,nuke:1,kt:150},
+ {app:'mirv',D:1.7,sep:.11,stag:.25,flash:.45,fdur:.6,fcol:'#fffbe8',shake:14,tint:.26,nuke:1,kt:150},
  {app:'cyber',D:.4,flash:0,fdur:.1,fcol:'#000000',shake:0,tint:.12,tcol:'#0a1020'},
  {app:'cruise',D:1,flash:.25,fdur:.3,fcol:'#bfe6ff',shake:0,tint:.08,tcol:'#4fc3ff'},
  {app:'ballistic',D:1,flash:.2,fdur:.2,fcol:'#e8ffd8',shake:4,tint:.12,tcol:'#4cff60'},
@@ -467,11 +467,11 @@ function surfVariant(i){if(SURF[i]!=null)return SURF[i];const b=W[i],mt=(b.fx.kt
 const surfOK=w=>w.fx.nuke&&!w.flood&&w.fx.app!=='meteor';
 const HMN={air:'공중 폭발',surf:'지표 폭발',under:'지하 폭발',water:'수중 폭발',high:'고고도 폭발'};
 const ktSel={},VAR={};const ktOf=i=>ktSel[i]??W[i].fx.kt;
-/* 다탄두 수 (1~20발) */
-const MVMAX=20,mvSel={},MVAR={};const mvOf=i=>clamp(Math.round(mvSel[i]??W[i].pattern.n),1,MVMAX);
+/* 다탄두 수 (1~15발) */
+const MVMAX=15,mvSel={},MVAR={};const mvOf=i=>clamp(Math.round(mvSel[i]??W[i].pattern.n),1,MVMAX);
 function mvVar(i){const b=W[i];if(!b.mv||!b.pattern)return i;const n=mvOf(sel),p0=b.pattern;if(n===p0.n)return i;const key=i+'|'+n;if(MVAR[key]!=null)return MVAR[key];
-  const sp=+(p0.spread*Math.max(.55,Math.sqrt(n/p0.n))).toFixed(1);
-  const v={...b,pattern:{...p0,n,spread:sp},fx:{...b.fx,stag:b.fx.stag?+(b.fx.stag*Math.min(1,7/n)).toFixed(3):b.fx.stag},
+  const sp=+Math.min(p0.spread*1.3,p0.spread*Math.max(.55,Math.sqrt(n/p0.n))).toFixed(1);
+  const v={...b,pattern:{...p0,n,spread:sp},fx:{...b.fx,D:+(b.fx.D*(1+Math.max(0,n-7)*.035)).toFixed(2),stag:b.fx.stag?+(b.fx.stag*Math.min(1,7/n)).toFixed(3):b.fx.stag},
     name:/MIRV \d+/.test(b.name)?b.name.replace(/MIRV \d+/,'MIRV '+n):b.name+' · '+n+'발',
     info:(b.info||'').replace(/\d+(발|기)/,n+'$1').replace(/약 [\d.]+km/,'약 '+sp+'km')};
   prep(v);W.push(v);return MVAR[key]=W.length-1}
@@ -790,13 +790,14 @@ function dmgGraph(now){const st=lastSt,w=W[st.w];if(w.layers[0]&&w.layers[0].k==
   const a=st.curve;if(a.length<2)return'';const T1=Math.max(1,a[a.length-1]),tn=(now-td)/1000,Wd=220,Hd=46,N=a.length;let p='',j=0;
   for(let i=0;i<=40;i++){const t=T1*i/40;if(t>tn)break;while(j<N&&a[j]<=t)j++;p+=`${(i/40*Wd).toFixed(1)},${(Hd-j/N*Hd).toFixed(1)} `}
   return`<div class="g"><svg viewBox="0 0 ${Wd} ${Hd}" width="100%" height="${Hd}" aria-label="시간에 따른 붕괴 건물 수"><polyline points="${p}" fill="none" stroke="#ff8a3d" stroke-width="2"/><line x1="0" y1="${Hd}" x2="${Wd}" y2="${Hd}" stroke="#3a4050"/></svg><div class="gl"><span>0s</span><span>붕괴 건물 수 변화</span><span>${T1.toFixed(1)}s</span></div></div>`}
+const fallN=(st,now)=>{let f=0;st.c.forEach((_,i)=>{const e=st.x&&st.x[i]?st.ti[i]:st.td[i];if(now<e)f++});return f};
 function renderStats(now){
   const el=$('stats');if(!lastSt){el.innerHTML='';return}
-  const w=W[lastSt.w],td=lastSt.td[0];
-  if(now<td){el.innerHTML=`<h2>${w.name}</h2><div class="r">${lastSt.x?'요격 진행':'탄착까지'}<b>${((td-now)/1000).toFixed(1)}s</b></div>`;return}
+  const w=W[lastSt.w],td=lastSt.td[0],fl=lastSt.c.length>1&&!w.band?`<div class="r">낙하 중<b>${fallN(lastSt,now)} / ${lastSt.c.length}발</b></div>`:'';
+  if(now<td){el.innerHTML=`<h2>${w.name}</h2><div class="r">${lastSt.x?'요격 진행':'탄착까지'}<b>${((td-now)/1000).toFixed(1)}s</b></div>`+fl;return}
   const k=RM?1:ease(clamp((now-td)/1600,0,1));
   if(!lastSt.live){el.innerHTML=`<h2>타격 결과 · ${w.name}</h2><div class="r">요격<b>${lastSt.c.length} / ${lastSt.c.length}발</b></div><div class="r">결과<b>전량 요격 · 피해 없음</b></div>`;return}
-  el.innerHTML=`<h2>타격 결과 · ${w.name}</h2>`+lastSt.stats.map(r=>`<div class="r">${r[0]}<b>${r[3]<0?r[1]:(r[1]*k).toLocaleString('ko-KR',{maximumFractionDigits:r[3],minimumFractionDigits:r[3]})+' '+r[2]}</b></div>`).join('')+(modeN===2&&V3&&V3.saved()?`<div class="r">🏃 대피소 도착 (미니어처 인원)<b>${V3.saved()} 명</b></div>`:'')+dmgGraph(now)+`<div class="s">가상 도시 기준 연출용 추정치</div>`;
+  el.innerHTML=`<h2>타격 결과 · ${w.name}</h2>`+(fallN(lastSt,now)?fl:'')+lastSt.stats.map(r=>`<div class="r">${r[0]}<b>${r[3]<0?r[1]:(r[1]*k).toLocaleString('ko-KR',{maximumFractionDigits:r[3],minimumFractionDigits:r[3]})+' '+r[2]}</b></div>`).join('')+(modeN===2&&V3&&V3.saved()?`<div class="r">🏃 대피소 도착 (미니어처 인원)<b>${V3.saved()} 명</b></div>`:'')+dmgGraph(now)+`<div class="s">가상 도시 기준 연출용 추정치</div>`;
 }
 
 /* 그리기 */
@@ -978,7 +979,7 @@ function reticle(sx,sy,r,label){
   if(label){ctx.fillStyle='#ffb070';ctx.font='700 14px Rajdhani,sans-serif';ctx.textAlign='left';ctx.fillText(label,sx+s+8,sy-s)}
 }
 function apPos(st,i,tm){const w=W[st.w],fx=w.fx,c=st.c[i],td=st.td[i],ta=td-(fx.hold||0)*1000,T0=st.t0,[sx,sy]=toS(c.x,c.y),L=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];
-  if(fx.app==='mirv'){const[x0,y0]=toS(st.c[0].x,st.c[0].y),B=[x0,y0-160],S=[x0+vw*.35,y0-vh*1.2],Ts=T0+fx.D*450;if(tm<Ts)return L(S,B,clamp((tm-T0)/(Ts-T0),0,1));return L(B,[sx,sy],clamp((tm-Ts)/(td-Ts),0,1)**1.4)}
+  if(fx.app==='mirv'){const[x0,y0]=toS(st.c[0].x,st.c[0].y),B=[x0,y0-160],S=[x0+vw*.35,y0-vh*1.2],Ts=T0+fx.D*450+i*(fx.sep||0)*1000,Tb=T0+fx.D*450;if(tm<Ts)return L(S,B,clamp((tm-T0)/(Tb-T0),0,1));return L(B,[sx,sy],clamp((tm-Ts)/(td-Ts),0,1)**1.4)}
   const u=clamp((tm-T0)/(ta-T0),0,1);
   switch(fx.app){
     case'cruise':return[sx-vw*.7*(1-u),sy+6*Math.sin(u*20)*(1-u)];
@@ -1011,7 +1012,7 @@ function drawApproach(st,now){
   st.c.forEach((c,i)=>{
     const td=st.td[i],ta=td-(fx.hold||0)*1000;
     if(st.x&&st.x[i]){const ti=st.ti[i];if(now>ti+800)return;const ip=apPos(st,i,ti),d=st.xs[i],[dx,dy]=toS(d.x,d.y);
-      if(now<ti){if(!(fx.app==='mirv'&&now<T0+fx.D*450&&i>0))trailT(st,i,now,fx.app);const u=clamp((now-(ti-700))/700,0,1);
+      if(now<ti){if(!(fx.app==='mirv'&&now<T0+fx.D*450+i*(fx.sep||0)*1000&&i>0))trailT(st,i,now,fx.app);const u=clamp((now-(ti-700))/700,0,1);
         if(u>0){const hx=dx+(ip[0]-dx)*u,hy=dy+(ip[1]-dy)*u;ctx.strokeStyle='rgba(140,200,255,.75)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(dx,dy);ctx.lineTo(hx,hy);ctx.stroke();ctx.fillStyle='#dff0ff';ctx.beginPath();ctx.arc(hx,hy,3,0,7);ctx.fill()}}
       else{const k=(now-ti)/800;ctx.fillStyle=`rgba(200,230,255,${.8*(1-k)})`;ctx.beginPath();ctx.arc(ip[0],ip[1],6+34*k,0,7);ctx.fill();ctx.strokeStyle=`rgba(255,255,255,${1-k})`;ctx.lineWidth=2;ctx.stroke();
         if(i===st.x.indexOf(true)){ctx.fillStyle=`rgba(160,220,255,${1-k})`;ctx.font='700 15px Rajdhani,"IBM Plex Sans KR",sans-serif';ctx.textAlign='left';ctx.fillText('요격',ip[0]+14,ip[1]-10)}}
@@ -1020,7 +1021,7 @@ function drawApproach(st,now){
     if(now>=ta){reticle(sx,sy,0,fx.sig==='quake'?'지하 관통 중…':'에어로졸 확산 중…');return}
     const u=clamp((now-T0)/(ta-T0),0,1);
     if(!many||i===0)reticle(sx,sy,1-u,i===0?`탄착 ${((ta-now)/1000).toFixed(1)}s`:'');
-    if(fx.app==='mirv'&&now<T0+fx.D*450&&i>0)return;
+    if(fx.app==='mirv'&&now<T0+fx.D*450+i*(fx.sep||0)*1000&&i>0)return;
     if(fx.app==='shell'||fx.app==='cyber'||fx.app==='volcano')return;
     if(fx.app==='ufo'){const u=clamp((now-T0)/(st.td[i]-T0),0,1);ctx.fillStyle=`rgba(5,8,14,${.55*u})`;ctx.beginPath();ctx.arc(sx,sy,3.4*cam.z*(.6+.4*u),0,7);ctx.fill();ctx.strokeStyle=`rgba(120,230,255,${.6*u})`;ctx.lineWidth=2;ctx.stroke();return}
     const h=trailT(st,i,now,fx.app);
@@ -1462,7 +1463,7 @@ a*=clamp(1.-(t-45.)/20.,0.,1.);vec4 mv=modelViewMatrix*vec4(p*uS,1.);gl_Position
   }
   function appPos(st,ci,now,back){
     const w=W[st.w],fx=w.fx,c=st.c[ci],td=st.td[ci],ta=td-(fx.hold||0)*1000,L=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t],tg=[c.x,0,c.y];
-    if(fx.app==='mirv'){const c0=st.c[0],S=[c0.x+12,70,c0.y-16],B=[c0.x,16,c0.y],Ts=st.t0+fx.D*450,bt=(now-st.t0)/(Ts-st.t0)-back;if(bt<1)return L(S,B,clamp(bt,0,1));return L(B,tg,clamp((now-Ts)/(td-Ts)-back,0,1)**1.4)}
+    if(fx.app==='mirv'){const c0=st.c[0],S=[c0.x+12,70,c0.y-16],B=[c0.x,16,c0.y],Ts=st.t0+fx.D*450+ci*(fx.sep||0)*1000,Tb=st.t0+fx.D*450,bt=(now-st.t0)/(Tb-st.t0)-back;if(now<Ts)return L(S,B,clamp(bt,0,1));return L(B,tg,clamp((now-Ts)/(td-Ts)-back,0,1)**1.4)}
     const u=clamp((now-st.t0)/(ta-st.t0)-back,0,1);
     if(fx.app==='cruise')return L([c.x-16,.12,c.y],[c.x,.03,c.y],u);
     if(fx.app==='glide'){const p=L([c.x+22,28,c.y-14],tg,u);p[0]+=Math.sin(u*14)*1.2*(1-u);return p}
@@ -1931,9 +1932,10 @@ a*=clamp(1.-(t-45.)/20.,0.,1.);vec4 mv=modelViewMatrix*vec4(p*uS,1.);gl_Position
   };
   let tw=null;
   let tz=null;
-  function frame(st){const w=W[st.w],c=st.c[0]||st.path[0],H=w.fx.nuke?3.5*Math.pow(w.fx.kt,.2):0;
-    if(day){const need=Math.max(H*.6,Math.min(w.outer?w.outer.r:2,40)*.9,1);const z1=Math.min(ortho.zoom,HH/need);if(z1>=ortho.zoom*.97)return;tz={t0:SN()+(st.td[0]-SN())*.4,z0:ortho.zoom,z1};return}
-    const cur=cam3.position.distanceTo(ctl.target),want=Math.min(160,Math.max(cur,H*2.6,(w.outer?w.outer.r:2)*1.4));
+  function sprd(st){const n=st.c.length;if(n<2)return{x:(st.c[0]||st.path[0]).x,y:(st.c[0]||st.path[0]).y,r:0};let x=0,y=0;st.c.forEach(c=>{x+=c.x;y+=c.y});x/=n;y/=n;let r=0;st.c.forEach(c=>{r=Math.max(r,Math.hypot(c.x-x,c.y-y))});return{x,y,r}}
+  function frame(st){const w=W[st.w],sp=sprd(st),c=st.c.length>1?sp:(st.c[0]||st.path[0]),H=w.fx.nuke?3.5*Math.pow(w.fx.kt,.2):0;
+    if(day){const need=Math.max(H*.6,Math.min(w.outer?w.outer.r:2,40)*.9,(sprd(st).r+1)*1.3,1);const z1=Math.min(ortho.zoom,HH/need);if(z1>=ortho.zoom*.97)return;tz={t0:SN()+(st.td[0]-SN())*.4,z0:ortho.zoom,z1};return}
+    const cur=cam3.position.distanceTo(ctl.target),want=Math.min(160,Math.max(cur,H*2.6,(w.outer?w.outer.r:2)*1.4,(sp.r+(w.outer?w.outer.r:2)*.6)*2.4));
     if(want<=cur*1.05&&Math.hypot(ctl.target.x-c.x,ctl.target.z-c.y)<want*.3)return;
     tw={t0:SN()+(st.td[0]-SN())*.4,p0:cam3.position.clone(),q0:ctl.target.clone(),q1:new T.Vector3(c.x,0,c.y),d:want}}
   const _r=render;render=function(now){if(tz){const k=ease(clamp((now-tz.t0)/2600,0,1));if(k>0){ortho.zoom=tz.z0+(tz.z1-tz.z0)*k;ortho.updateProjectionMatrix()}if(k>=1)tz=null}if(tw){const k=ease(clamp((now-tw.t0)/2600,0,1));if(k>0){const q=tw.q0.clone().lerp(tw.q1,k),dir=tw.p0.clone().sub(tw.q0),d0=dir.length();dir.normalize();
@@ -1943,8 +1945,8 @@ a*=clamp(1.-(t-45.)/20.,0.,1.);vec4 mv=modelViewMatrix*vec4(p*uS,1.);gl_Position
   function focus(st){if(day)return;const c=st.c[0]||st.path[0],w=W[st.w],r=Math.min(80,Math.max(3,(w.outer?w.outer.r:3)*1.6));ctl.target.set(c.x,0,c.y);const d=cam3.position.clone().sub(ctl.target).normalize().multiplyScalar(r);cam3.position.copy(ctl.target).add(d)}
   /* 시네마 카메라 */
   let cine=null;const Vc=new T.Vector3(),Vd=new T.Vector3(),Yup=new T.Vector3(0,1,0);
-  function cineStart(st){const w=W[st.w];if(w.band||!st.c.length){cine=null;return}tz=tw=null;const c=st.c[0],O=w.outer?w.outer.r:1,H=w.fx.nuke?3.5*Math.pow(w.fx.kt,.2):0;
-    cine={st,c,O,H,t0:SN(),a0:day?Math.atan2(ortho.position.z-ctl2.target.z,ortho.position.x-ctl2.target.x):Math.atan2(cam3.position.z-ctl.target.z,cam3.position.x-ctl.target.x),z0:ortho.zoom,tg0:(day?ctl2.target:ctl.target).clone(),slow:false}}
+  function cineStart(st){const w=W[st.w];if(w.band||!st.c.length){cine=null;return}tz=tw=null;const sp=sprd(st),c=st.c[0],O=(w.outer?w.outer.r:1)+sp.r*.9,H=w.fx.nuke?3.5*Math.pow(w.fx.kt,.2):0;
+    cine={st,c,sp,O,H,t0:SN(),a0:day?Math.atan2(ortho.position.z-ctl2.target.z,ortho.position.x-ctl2.target.x):Math.atan2(cam3.position.z-ctl.target.z,cam3.position.x-ctl.target.x),z0:ortho.zoom,tg0:(day?ctl2.target:ctl.target).clone(),slow:false}}
   function cineStop(){if(!cine)return;if(cine.slow&&CLK.rate<1){CLK.rate=1;rateUI()}const t=day?ctl2.target:ctl.target;if(!day){ctl.target.copy(t)}cine=null;(day?ctl2:ctl).update()}
   function cineUpd(now){if(!cine)return;const st=cine.st,td=st.td[0],c=cine.c,O=cine.O;if(!strikes.includes(st)){cineStop();return}
     if(now>td+9000){cineStop();return}
@@ -1958,8 +1960,8 @@ a*=clamp(1.-(t-45.)/20.,0.,1.);vec4 mv=modelViewMatrix*vec4(p*uS,1.);gl_Position
     const tg=Vc.set(c.x,0,c.y),ta=td-(W[st.w].fx.hold||0)*1000;
     if(now<ta&&W[st.w].fx.app!=='bomber'){const p=appPos(st,0,now,0),q=appPos(st,0,now,.05);Vd.set(p[0]-q[0],p[1]-q[1],p[2]-q[2]);if(Vd.lengthSq()<1e-8)Vd.set(1,0,0);Vd.normalize();
       const dd=Math.max(.5,Math.hypot(p[0]-c.x,p[1],p[2]-c.y)*.12);cam3.position.set(p[0]-Vd.x*dd,p[1]-Vd.y*dd+dd*.35,p[2]-Vd.z*dd);ctl.target.set((p[0]+c.x)/2,p[1]*.5,(p[2]+c.y)/2);cam3.lookAt(ctl.target);return}
-    const R=Math.max(O*2.2,cine.H*2.4,2),k=ease(clamp((now-ta)/900,0,1));ctl.target.set(c.x,cine.H*.35,c.y);
-    cam3.position.set(c.x+Math.cos(ang)*R,R*.42*(.6+.4*k),c.y+Math.sin(ang)*R);cam3.lookAt(ctl.target)}
+    const R=Math.max(O*2.2,cine.H*2.4,2),k=ease(clamp((now-ta)/900,0,1));ctl.target.set(cine.sp.x,cine.H*.35,cine.sp.y);
+    cam3.position.set(cine.sp.x+Math.cos(ang)*R,R*.42*(.6+.4*k),cine.sp.y+Math.sin(ang)*R);cam3.lookAt(ctl.target)}
   el.addEventListener('pointerdown',()=>{if(cine)cineStop()});el.addEventListener('wheel',()=>{if(cine)cineStop()},{passive:true});
   /* 시간 되감기·비교·사진 */
   function scrub(){DFX.reset();if(TR){recomputeTrees();resetMovers();updDio(SN(),0,true)}updB(SN());lastB=SN()}
@@ -2057,14 +2059,14 @@ async function initGlobe(){
     const G=new T.Group();sc.add(G);const o={st,w,G,pts,tg,d,heads:[],trails:[],rings:[],shock:[],cloud:[],done:false,apex};
     o.meta={b:sel,kt:W[sel].nk?ktOf(sel):0,n:W[sel].mv?mvOf(sel):0,m:W[sel].nk?(W[sel].fm||$('hmode').value):'',lat:+tg.lat.toFixed(4),lon:+tg.lon.toFixed(4),wd:+$('wind').value,t:now};
     o.fl=[];if(isPulse(w))o.emp={t:td0+300,c:tg,r:w.layers[0].r};
-    if(flies){const main=arcPts(L,tg,apex),split=HIGH[app]&&n>1&&n<=20,NS=160,si=Math.floor(NS*.42),hp=main[si];if(split){st.td=pts.map((_,k)=>td0+k*80);st.end=st.td[st.td.length-1]+(fx.fdur||.5)*1000+15000}
+    if(flies){const main=arcPts(L,tg,apex),split=HIGH[app]&&n>1&&n<=20,NS=160,si=Math.floor(NS*.42),hp=main[si];if(split){st.td=pts.map((_,k)=>td0+k*110);st.end=st.td[st.td.length-1]+(fx.fdur||.5)*1000+15000}
       const mkPath=(dest,fan)=>{if(!split)return main;const P=main.slice(0,si+1),A=hp.clone().normalize(),B=v3(dest.lat,dest.lon),om=A.angleTo(B),h0=hp.length()-1,t=tangent(...Object.values(ll(hp)));
         for(let j=1;j<=48;j++){const u=j/48,dir=om<1e-7?A.clone():A.clone().multiplyScalar(Math.sin((1-u)*om)/Math.sin(om)).add(B.clone().multiplyScalar(Math.sin(u*om)/Math.sin(om))).normalize();
           const sw=Math.sin(u*Math.PI);dir.addScaledVector(t.e,sw*fan[0]).addScaledVector(t.nn,sw*fan[1]).normalize();P.push(dir.multiplyScalar(1+h0*Math.pow(1-u,1.25)))}return P};
       const add=(dest,decoy,k)=>{const a=(k/Math.max(1,n))*6.283+(decoy?.4:0),fs=apex*KM*.6,path=mkPath(dest,[Math.cos(a)*fs,Math.sin(a)*fs]);
         const lg=new T.BufferGeometry().setFromPoints(path);const ln=new T.Line(lg,new T.LineBasicMaterial({color:decoy?0x9aa3ad:HIGH[app]?0xffb070:0x9fe8ff,transparent:true,opacity:decoy?.55:.9}));lg.setDrawRange(0,0);G.add(ln);
         const hd=new T.Mesh(new T.SphereGeometry(1,12,8),new T.MeshBasicMaterial({color:decoy?new T.Color(1.2,1.2,1.3):new T.Color(4,2.6,1.4),toneMapped:false}));G.add(hd);
-        o.fl.push({path,ln,hd,decoy,k,td:decoy?td0+(k%n)*80:st.td[k],dead:Infinity,end:decoy?.86:1})};
+        o.fl.push({path,ln,hd,decoy,k,td:decoy?td0+(k%n)*110:st.td[k],dead:Infinity,end:decoy?.86:1})};
       if(split){pts.forEach((p,k)=>add(p,false,k));if(w.decoy)pts.forEach((p,k)=>{const q=offset(p.lat,p.lon,(Math.random()-.5)*40,(Math.random()-.5)*40);add(q,true,k)})}else add(tg,false,0);
       o.path=main;
       /* 요격 */
@@ -2074,12 +2076,12 @@ async function initGlobe(){
         const ui=f.decoy?.7+Math.random()*.1:.78+Math.random()*.1;o.icp.push(mkInt(bestB,f,ui,true));if(!f.decoy){ok++;st.x[f.k]=1;st.ti[f.k]=t0+(f.td-t0)*ui}});
       o.icRes=tot?{ok,tot}:null;if(o.icp.length)log(`요격 시도 · ${o.icp.length}회`+(w.decoy?' · 기만체에 일부 분산':''),'w')}
     pts.forEach((p,k)=>{const ls=w.band?[...w.band.map(b=>({k:b.k,r:b.w/2}))]:w.layers;
-      const sorted=[...ls].sort((a,b)=>b.r-a.r);const rg=new T.Group();sorted.forEach((l,j)=>{if(n>12&&k%3)return;rg.add(disk(p.lat,p.lon,Math.max(l.r,.03),LC[l.k]||0xffffff,j===0?.14:.22,.02+j*.01))});
+      const sorted=[...ls].sort((a,b)=>b.r-a.r);const rg=new T.Group();sorted.forEach((l,j)=>{if(n>20&&k%3)return;rg.add(disk(p.lat,p.lon,Math.max(l.r,.03),LC[l.k]||0xffffff,j===0?.14:.22,.02+j*.01))});
       if(w.plume&&k===0){const a=$('wind').value*D2R,c=offset(p.lat,p.lon,Math.sin(a)*w.plume.len/2,Math.cos(a)*w.plume.len/2),pl=disk(c.lat,c.lon,1,0xe0b54a,.16,.01);pl.scale.set(w.plume.w/2,w.plume.len/2,1);pl.rotation.z=0;
         const t=tangent(c.lat,c.lon);pl.quaternion.setFromUnitVectors(new T.Vector3(0,0,1),t.n);pl.rotateZ(-a);rg.add(pl)}
       rg.visible=false;G.add(rg);o.rings.push(rg);
       const shk=disk(p.lat,p.lon,1,0xffffff,.0,.05);shk.children[0].visible=false;shk.visible=false;G.add(shk);o.shock.push(shk);
-      if(fx.nuke&&k<10){const H=cloudTop(fx.kt||1),cg=new T.Group(),P=[],C=[],add=(x,y,z,sz)=>{P.push(x,y,z);const sh=.62+.38*Math.min(1,y);C.push(sh*1.02,sh*.95,sh*.88,sz)};
+      if(fx.nuke&&k<15){const H=cloudTop(fx.kt||1),cg=new T.Group(),P=[],C=[],add=(x,y,z,sz)=>{P.push(x,y,z);const sh=.62+.38*Math.min(1,y);C.push(sh*1.02,sh*.95,sh*.88,sz)};
         for(let i=0;i<70;i++){const y=Math.random()*.82,r=.05+.05*y+Math.random()*.03,a=Math.random()*6.283;add(Math.cos(a)*r*.6,y,Math.sin(a)*r*.6,.09+.05*Math.random())}
         for(let i=0;i<220;i++){const a=Math.random()*6.283,rr=Math.sqrt(Math.random()),r=.08+rr*.3,y=.84+(1-rr*rr)*.16*Math.random()+Math.random()*.06;add(Math.cos(a)*r,y,Math.sin(a)*r,.12+.08*Math.random())}
         for(let i=0;i<60;i++){const a=Math.random()*6.283,r=.3+Math.random()*.1;add(Math.cos(a)*r,.8+Math.random()*.08,Math.sin(a)*r,.1)}
@@ -2142,6 +2144,7 @@ async function initGlobe(){
       if(o.fl.length){const fade=now>st.end-6000?Math.max(0,1-(now-st.end+6000)/4000):1;
         o.fl.forEach(f=>{const u=Math.min(1,(now-st.t0)/(f.td-st.t0)),uk=Math.min(u,f.dead,f.end),k=Math.floor(uk*(f.path.length-1));f.ln.geometry.setDrawRange(0,k+1);f.ln.material.opacity=(f.decoy?.55:.9)*fade;
           f.hd.visible=u<Math.min(1,f.dead,f.end);if(f.hd.visible){const p=f.path[k];f.hd.position.copy(p);f.hd.scale.setScalar(Math.max(.0012,cam.position.distanceTo(p)*(f.decoy?.004:.006)))}});
+        if(o===SH[SH.length-1]){const rl=o.fl.filter(f=>!f.decoy),nf=rl.filter(f=>f.hd.visible).length;const t=rl.length>1&&nf?`낙하 중 ${nf} / ${rl.length}발`:'';if($('gFall').textContent!==t)$('gFall').textContent=t}
         (o.icp||[]).forEach(ic=>{if(!ic.added){o.G.add(ic.ln,ic.hd,ic.bx);ic.added=true}const f=ic.f,tH=st.t0+(f.td-st.t0)*ic.ui,tL=Math.max(st.t0+300,tH-3200),u=clamp((now-tL)/(tH-tL),0,1),k=Math.floor(u*(ic.pts.length-1));
           ic.ln.geometry.setDrawRange(0,now<tL?0:k+1);ic.ln.material.opacity=.9*fade;ic.hd.visible=now>=tL&&u<1;if(ic.hd.visible){const p=ic.pts[k];ic.hd.position.copy(p);ic.hd.scale.setScalar(Math.max(.001,cam.position.distanceTo(p)*.0045))}
           if(u>=1&&ic.hit){if(f.dead===Infinity){f.dead=ic.ui;if(!f.decoy)log('요격 성공','w')}const e=(now-tH)/1000;ic.bx.visible=e<1.2;if(ic.bx.visible){ic.bx.position.copy(ic.P);const sz=Math.max(.0015,cam.position.distanceTo(ic.P)*.012)*(.3+e);ic.bx.scale.setScalar(sz);ic.bx.material.opacity=1-e/1.2}}
@@ -2457,7 +2460,7 @@ async function chStart(i){if(!chOpenOK(i)){msg('앞 단계에서 별 1개 이상
 function chWave(){if(!CH)return;const tok=CH.tok,c=CHS[CH.i],wv=c.waves[CH.w],dir=c.dirs[CH.w];CH.phase='wave';CH.wok=0;selDef=-1;renderGrid();if(SHEET()&&sideOpen())sideSet(false);chBar();log(`웨이브 ${CH.w+1} 접근 · ${dirName(dir)}쪽`,'d');
   const L=[];wv.forEach(([b,n,kt])=>{for(let q=0;q<n;q++)L.push([b,kt])});L.sort(()=>Math.random()-.5);let k=0;const h0=$('hmode').value,s0=sel;
   const fire=()=>{if(!CH||CH.tok!==tok)return;if(k>=L.length){setTimeout(()=>{if(!CH||CH.tok!==tok)return;CH.w++;if(CH.w<CHN()){CH.bonus=8+Math.round(CH.wok*4);CH.budget+=CH.bonus;CH.phase='repair';chBar();log(`웨이브 끝 · 정비 시간 (예산 +${CH.bonus}점)`,'w');msg('정비 시간이에요. 방어를 더 놓고 "다음 웨이브"를 누르세요');if(!sideOpen()&&!SHEET())sideSet(true)}else chEnd()},7000);return}
-    const [b,kt]=L[k++],a=dir==null?Math.random()*6.283:dir+(Math.random()-.5)*1.4,r=dir==null?1+Math.random()*6:2+Math.random()*5.5;sel=b;if(kt)ktSel[b]=kt;$('hmode').value='air';CH.auto=true;const n0=strikes.length;strike([{x:CX+Math.cos(a)*r,y:CY+Math.sin(a)*r}],false);CH.auto=false;$('hmode').value=h0;sel=s0;
+    const [b,kt]=L[k++],a=dir==null?Math.random()*6.283:dir+(Math.random()-.5)*1.4,r=dir==null?1+Math.random()*6:2+Math.random()*5.5;sel=b;if(kt)ktSel[b]=kt;$('hmode').value='air';CH.auto=true;const n0=strikes.length,mv0=mvSel[b];delete mvSel[b];strike([{x:CX+Math.cos(a)*r,y:CY+Math.sin(a)*r}],false);if(mv0!=null)mvSel[b]=mv0;CH.auto=false;$('hmode').value=h0;sel=s0;
     const st=strikes[strikes.length-1];if(strikes.length>n0&&st){const n=st.c.length;CH.tot+=1;if(st.x&&n){const o=st.x.filter(Boolean).length/n;CH.ok+=o;CH.wok+=o}}chBar();setTimeout(fire,1400+Math.random()*1200)};fire()}
 function chEnd(){if(!CH)return;CH.phase='end';chBar();const tok=CH.tok;setTimeout(()=>{if(!CH||CH.tok!==tok)return;const core=chCore(),now=SN();let lost=0;core.forEach(k=>{if(hitS[k]>=2&&hitT[k]<=now)lost++});
   const keep=core.length?1-lost/core.length:1,ir=CH.tot?CH.ok/CH.tot:1,sk=keep>=.99?3:keep>=.97?2:keep>=.9?1:0,si=ir>=.8?3:ir>=.6?2:ir>=.4?1:0,st=Math.min(sk,si),i=CH.i,left=Math.max(0,CH.budget-budgetUsed()),
